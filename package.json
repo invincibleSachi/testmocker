@@ -1,0 +1,26 @@
+{
+  "name": "testmocker",
+  "version": "1.0.0",
+  "description": "this is mocking utility for testing",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/invincibleSachi/testmocker.git"
+  },
+  "author": "sachchida.singh",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/invincibleSachi/testmocker/issues"
+  },
+  "homepage": "https://github.com/invincibleSachi/testmocker#readme",
+  "dependencies": {
+    "@angular/cli": "^8.2.1",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "mongoose": "^5.6.9"
+  }
+}
