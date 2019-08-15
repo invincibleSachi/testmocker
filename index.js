@@ -1,5 +1,6 @@
 //importing modules
-var express =require('express');
-var mongoose =require('mongoose');
-var bodyparser=require('body-parser');
-var path=require('path')
+var express = require("express");
+var auth = require("./controllers/authControllers");
+var app = express();
+app.use("/api/auth", auth);
+app.listen(3000);

@@ -1,0 +1,12 @@
+.welcome-text {
+  color: blue;
+}
+.profile-pic {
+  float: right;
+  width: 100;
+  height: 100;
+}
+p-accordionTab {
+  background-color: blue;
+  color: #fff;
+}

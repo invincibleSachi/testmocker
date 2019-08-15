@@ -10,13 +10,14 @@ import { Subscription } from 'rxjs';
 })
 export class AppComponent implements OnInit, OnDestroy {
   title = 'client';
-  isLoggedIn: boolean = false;
   private subscription: Subscription;
   constructor(
     private cookieService: CookieService
   ) {
 
   }
+
+  isLoggedIn: boolean = false;
 
   ngOnInit() {
   }

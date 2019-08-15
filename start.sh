@@ -1,0 +1,1 @@
+mongo <dbsetup.js
