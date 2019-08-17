@@ -25,6 +25,14 @@ const routes: Routes = [
     component: HomeComponent
   },
   {
+    path: 'dashboard',
+    component: DashboardComponent
+  },
+  {
+    path: 'service-mock',
+    component: MockComponent
+  },
+  {
     path: '**',
     redirectTo: 'home'
   }]

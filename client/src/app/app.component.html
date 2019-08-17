@@ -14,7 +14,7 @@
     </div>
   </div>
 
-  <ul *ngIf="isLoggedIn == true" class="navbar-menu navbar-width">
+  <ul *ngIf="isLoggedIn" class="navbar-menu navbar-width">
     <li class="navbar-usuario">
       <a routerLink="/">
         <img
@@ -35,7 +35,7 @@
       >
     </li>
     <li class="navbar-menuitem">
-      <a routerLink="dashboard"
+      <a routerLink="service-mock"
         ><img
           src="../assets/images/mock.png"
           alt="sap logo"

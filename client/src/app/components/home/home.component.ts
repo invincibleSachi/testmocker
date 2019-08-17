@@ -26,7 +26,7 @@ export class HomeComponent implements OnInit {
   otp: string;
   signUpDone = false;
   showRegistrationForm = false;
-  isLoggedIn = false;
+  isLoggedIn = true;
   credentials: Credentials = undefined;
 
   constructor(private authService: AuthServiceService, private cookieService: CookieService) { }

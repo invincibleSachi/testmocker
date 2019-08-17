@@ -19,12 +19,14 @@ export class AppComponent implements OnInit, OnDestroy {
       this.cookieService.set('token', '');
       this.cookieService.set('isLoggedIn', 'false');
     }
+    this.isLoggedIn = (this.cookieService.get('isLoggedIn') === 'true');
   }
 
   isLoggedIn = true;
 
   ngOnInit() {
     this.isLoggedIn = (this.cookieService.get('isLoggedIn') === 'true');
+    this.isLoggedIn = true;
   }
 
   ngOnDestroy() {
