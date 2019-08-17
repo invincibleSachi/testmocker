@@ -1,12 +1,13 @@
 var mongoose = require("mongoose");
-var tokenSchema = new mongoose.Schema({
+mongoose.set("useCreateIndex", true);
+var tokensch = new mongoose.Schema({
   team_name: String,
   token: String,
   is_active: Boolean,
   generated_timestamp: { type: Date, default: Date.now },
   token_expiry: { type: Date }
 });
-var tokenSchema = mongoose.model("userToken", tokenSchema);
+var tokenSchema = mongoose.model("token", tokensch);
 module.exports = {
   tokenSchema: tokenSchema,
   findAllActiveTokenByUserName: function(team_name) {

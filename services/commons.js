@@ -1,5 +1,5 @@
 var crypto = require("crypto");
-const uuidv1 = require("uuid/v1");
+const uuidv4 = require("uuid/v4");
 module.exports = {
   getRandomNumber: function(size) {
     let max = Math.pow(10, size) - 1;
@@ -35,6 +35,6 @@ module.exports = {
     return new_pwd_hash === stored_hash;
   },
   getRandomToken: function() {
-    return uuidv1();
+    return uuidv4();
   }
 };

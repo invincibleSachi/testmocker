@@ -4,6 +4,9 @@ import { AuthServiceService } from '../../services/auth-service.service';
 import { LoginRequest } from '../../models/login_model';
 import { UserRegistrationRequest } from '../../models/register_model';
 import { VerifyOtpRequest } from 'src/app/models/verify_otp_model';
+import { CookieService } from 'ngx-cookie-service';
+import { Credentials } from '../../models/credentials';
+import { error } from '@angular/compiler/src/util';
 
 @Component({
   selector: 'app-home',
@@ -12,7 +15,7 @@ import { VerifyOtpRequest } from 'src/app/models/verify_otp_model';
 })
 export class HomeComponent implements OnInit {
 
-  usernameLogin: string;
+  teamNameLogin: string;
   passwordLogin: string;
   email: string;
   teamName: string;
@@ -24,12 +27,15 @@ export class HomeComponent implements OnInit {
   signUpDone = false;
   showRegistrationForm = false;
   isLoggedIn = false;
+  credentials: Credentials = undefined;
 
-  constructor(private authService: AuthServiceService) { }
+  constructor(private authService: AuthServiceService, private cookieService: CookieService) { }
 
   ngOnInit() {
     this.signUpDone = false;
     this.showRegistrationForm = false;
+    this.isLoggedIn = (this.cookieService.get('isLoggedIn') === 'true');
+    this.credentials = { teamName: this.teamName, token: this.cookieService.get('token') };
   }
 
   toggleForm() {
@@ -37,7 +43,20 @@ export class HomeComponent implements OnInit {
   }
 
   login() {
+    const loginReq = new LoginRequest();
+    loginReq.teamName = this.teamNameLogin;
+    loginReq.password = this.passwordLogin;
 
+    this.authService.login(loginReq).subscribe(result => {
+      console.log(result);
+      this.cookieService.set('isLoggedIn', 'true');
+      this.cookieService.set('token', result.token);
+      this.cookieService.set('teamName', result.teamName);
+      alert(result.msg);
+    }, error => {
+      console.log(error);
+      alert('user credentials are not valid');
+    });
   }
 
   logout() {

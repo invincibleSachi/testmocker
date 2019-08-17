@@ -10,6 +10,7 @@ var tokenSchema = tokenModel.tokenSchema;
 var otpSchema = otpModel.otpSchema;
 var constants = require("../constants");
 var emailService = require("../services/emailService");
+var crypto = require("crypto");
 
 var getPwdHash = services.commons.getPwdHash;
 
@@ -114,9 +115,47 @@ router.post("/verifyOtp", function(req, res) {
 });
 router.post("/login", function(req, res) {
   console.log("request:: " + req.body);
-  let userName = req.body.teamName;
+  let teamName = req.body.teamName;
   let password = req.body.password;
-  res.send("login sucessful");
+  var query = User.findActiveUserByTeamName(teamName);
+  query.exec(function(err, user) {
+    if (err) {
+      return false;
+    }
+    if (user.length > 0) {
+      hash_db = user[0].password;
+      salt_db = user[0].salt;
+      var hash = crypto
+        .pbkdf2Sync(password, salt_db, 1000, 64, `sha512`)
+        .toString(`hex`);
+
+      if (hash === hash_db) {
+        let token = services.commons.getRandomToken();
+        let d = new Date();
+        let d1 = services.commons.getTimeByOffset(constants.otpExpiry);
+        var response = {
+          teamName: teamName,
+          token: token,
+          is_active: true,
+          generated_timestamp: d,
+          token_expiry: d1
+        };
+        tokenS = new tokenSchema(response);
+        tokenS.save(function(err) {
+          if (err) {
+            res.status(400).send({ msg: "something went wrong" });
+          } else {
+            response.msg = "User Authenticated";
+            res.status(200).send(response);
+          }
+        });
+      } else {
+        res.status(404).send({ msg: "user not authenticated" });
+      }
+    } else {
+      res.status(404).send({ msg: "user not authenticated" });
+    }
+  });
 });
 
 var sendOtp = function(unique_name, purpose, email) {

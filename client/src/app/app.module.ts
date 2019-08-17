@@ -12,13 +12,14 @@ import { LoginComponent } from './components/auth/login/login.component';
 import { RegisterComponent } from './components/auth/register/register.component';
 import { CookieService } from 'ngx-cookie-service';
 import { Routes, RouterModule } from '@angular/router';
+import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { MockComponent } from './components/mock/mock.component';
 
 const routes: Routes = [
   {
     path: 'login',
     component: LoginComponent
   },
-
   {
     path: 'home',
     component: HomeComponent
@@ -26,14 +27,15 @@ const routes: Routes = [
   {
     path: '**',
     redirectTo: 'home'
-  }
-]
+  }]
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
     LoginComponent,
-    RegisterComponent
+    RegisterComponent,
+    DashboardComponent,
+    MockComponent
   ],
   imports: [
     BrowserModule,

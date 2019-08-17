@@ -9,17 +9,22 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit, OnDestroy {
-  title = 'client';
+  title = 'Mocker';
   private subscription: Subscription;
   constructor(
     private cookieService: CookieService
   ) {
-
+    if (this.cookieService.get('isLoggedIn') !== 'false') {
+      this.cookieService.set('employeeId', '');
+      this.cookieService.set('token', '');
+      this.cookieService.set('isLoggedIn', 'false');
+    }
   }
 
-  isLoggedIn = false;
+  isLoggedIn = true;
 
   ngOnInit() {
+    this.isLoggedIn = (this.cookieService.get('isLoggedIn') === 'true');
   }
 
   ngOnDestroy() {
