@@ -31,12 +31,12 @@ var sendMail = function(to, subject, content) {
 };
 module.exports = {
   sendRegistrationOTP: function(otp, emailId, userId) {
-    let subject = "Welcome to GoIndia Online Business portal";
+    let subject = "Welcome to SAP Mocker Application";
     //<b>Welcome from goIndiaOnline. <br>'+content+'</b>'
     let content =
       "<b> Hi " +
       userId +
-      ', Greetings!! <br><br> Welcome from goIndiaOnline.com <br> your otp for registration is :: <font color="red">' +
+      ', Greetings!! <br><br> Welcome from SAP Mocker Application <br> your otp for registration is :: <font color="red">' +
       otp +
       "</font></br>";
     sendMail(emailId, subject, content);

@@ -4,7 +4,7 @@ let validator = require("validator");
 var crypto = require("crypto");
 
 var userAccountSchema = new mongoose.Schema({
-  user_name: { type: String, required: true, unique: true },
+  unique_name: { type: String, required: true, unique: true },
   team_name: { type: String, required: true, unique: true },
   email: {
     type: String,
@@ -14,7 +14,12 @@ var userAccountSchema = new mongoose.Schema({
     validate: value => {
       return validator.isEmail(value);
     }
-  }
+  },
+  password: { type: String, required: true },
+  contact_person: { type: String },
+  employeeId: { type: String },
+  salt: { type: String },
+  is_active: Boolean
 });
 userAccountSchema.methods.setPassword = function(password) {
   // creating a unique salt for a particular user
@@ -38,28 +43,31 @@ var User = mongoose.model("User", userAccountSchema);
 module.exports = {
   UserSchema: User,
   findUserByEmail: function(email) {
+    console.log("finding user by email " + email);
     return User.find({ email: email });
   },
   findUserByTeamName: function(team_name) {
-    console.log("finding user by user name " + team_name);
+    console.log("finding user by team name " + team_name);
     return User.find({ team_name: team_name });
   },
-  findActiveUserByUserName: function(user_name) {
-    console.log("finding user by user name " + user_name);
-    return User.find({ user_name: user_name, is_active: true });
-  },
+
   findByUserNameAndUpdatePwd: function(
-    user_name,
+    team_name,
     password_hash,
     password_salt
   ) {
     let update = { password_hash: password_hash, password_salt: password_salt };
-    let query = { user_name: user_name };
+    let query = { team_name: team_name };
     console.log(query);
     return User.findOneAndUpdate(query, update);
   },
-  verifyUserCreds: function(user_name, password) {
-    var user = User.findOne({ user_name: user_name });
+  activeUser: team_name => {
+    let query = { team_name: team_name };
+    let update = { is_active: true };
+    return User.findOneAndUpdate(query, update);
+  },
+  verifyUserCreds: function(team_name, password) {
+    var user = User.findOne({ team_name: team_name });
     hash_db = user.password_hash;
     salt_db = user.password_salt;
     var hash = crypto

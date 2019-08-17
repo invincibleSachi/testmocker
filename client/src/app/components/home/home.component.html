@@ -102,7 +102,7 @@
                   class="btn btn-default"
                   (click)="toggleForm()"
                 >
-                  Sign Up Here
+                  <p style="color:blue"><b>Sign Up Here</b></p>
                 </button>
               </div>
             </div>
@@ -120,7 +120,7 @@
   >
     <div class="panel panel-info">
       <div class="panel-heading">
-        <div class="panel-title">Sign Up</div>
+        <div class="panel-title"><b> Sign Up</b></div>
         <div
           style="float:right; font-size: 85%; position: relative; top:-10px"
         ></div>
@@ -149,7 +149,7 @@
 
           <div class="form-group">
             <label for="firstname" class="col-md-3 control-label"
-              >First Name</label
+              >Team Name</label
             >
             <div class="col-md-9">
               <input
@@ -163,16 +163,16 @@
             </div>
           </div>
           <div class="form-group">
-            <label for="lastname" class="col-md-3 control-label"
-              >Last Name</label
-            >
+            <label for="lastname" class="col-md-6 control-label"
+              >Contact Person
+            </label>
             <div class="col-md-9">
               <input
                 type="text"
                 class="form-control"
                 name="lastname"
-                [(ngModel)]="teamContact"
-                placeholder="User Name"
+                [(ngModel)]="contactPerson"
+                placeholder="Contact Person Name"
                 [disabled]="signUpDone"
               />
             </div>
@@ -188,6 +188,37 @@
                 name="employeeId"
                 [(ngModel)]="employeeId"
                 placeholder="Employee Id"
+                [disabled]="signUpDone"
+              />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="employeeId" class="col-md-3 control-label"
+              >Password</label
+            >
+            <div class="col-md-9">
+              <input
+                type="password"
+                class="form-control"
+                name="password"
+                [(ngModel)]="password"
+                placeholder="Password"
+                [disabled]="signUpDone"
+              />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="employeeId" class="col-md-6 control-label"
+              >Confirm Password</label
+            >
+            <div class="col-md-9">
+              <input
+                type="password"
+                class="form-control"
+                name="cpassword"
+                [(ngModel)]="cpassword"
+                placeholder="Confirm Password"
                 [disabled]="signUpDone"
               />
             </div>

@@ -1,6 +1,6 @@
 var mongoose = require("mongoose");
 var tokenSchema = new mongoose.Schema({
-  user_name: String,
+  team_name: String,
   token: String,
   is_active: Boolean,
   generated_timestamp: { type: Date, default: Date.now },
@@ -9,17 +9,17 @@ var tokenSchema = new mongoose.Schema({
 var tokenSchema = mongoose.model("userToken", tokenSchema);
 module.exports = {
   tokenSchema: tokenSchema,
-  findAllActiveTokenByUserName: function(user_name) {
+  findAllActiveTokenByUserName: function(team_name) {
     return tokenSchema.find({
-      user_name: user_name,
+      team_name: team_name,
       is_active: true,
       generated_timestamp: { $lte: new Date() },
       token_expiry: { $gte: new Date() }
     });
   },
-  findbyActiveToken: function(user_name, token) {
+  findbyActiveToken: function(team_name, token) {
     return tokenSchema.find({
-      user_name: user_name,
+      team_name: team_name,
       token_name: token,
       is_active: true,
       generated_timestamp: { $lte: new Date() },

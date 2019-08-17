@@ -10,7 +10,7 @@ const otpPurpose = Object.freeze({
   ForgotPwd: "forgot_password"
 });
 var otpSchema = new mongoose.Schema({
-  user_name: String,
+  unique_name: { type: String, required: true, unique: true },
   otp: Number,
   otpPurpose: { type: String, enum: Object.values(otpPurpose) },
   generated_timestamp: { type: Date, default: Date.now },
@@ -18,32 +18,33 @@ var otpSchema = new mongoose.Schema({
   status: { type: String, enum: Object.values(otpstatus) }
 });
 
-var otpModel = mongoose.model("otp", otpSchema);
+var otpSchema = mongoose.model("otp", otpSchema);
 module.exports = {
-  otpSchema: otpModel,
-  findAllOtPsByuserName: function(user_name) {
-    return otpModel.find({ user_name: user_name });
+  otpSchema: otpSchema,
+  findAllOtPsByuserName: function(unique_name) {
+    return otpSchema.find({ unique_name: unique_name });
   },
-  findActiveOtpByUserName: function(user_name) {
-    return otpModel.findOne({
-      user_name: user_name,
+  findActiveOtpByUniqueName: function(unique_name) {
+    return otpSchema.findOne({
+      unique_name: unique_name,
       status: "new",
       generated_timestamp: { $lte: new Date() },
       exipiry_timestamp: { $gte: new Date() }
     });
   },
-  findByUserNameAndUpdate: function(user_name, otp, purpose) {
+  findByUserNameAndUpdate: function(unique_name, otp, purpose) {
     let update = { status: "verified" };
     let query = {
-      user_name: user_name,
+      unique_name: unique_name,
       otp: otp,
       otpPurpose: purpose,
       status: "new",
       generated_timestamp: { $lte: new Date() },
       exipiry_timestamp: { $gte: new Date() }
     };
+    console.log("query");
     console.log(query);
-    return otpModel
+    return otpSchema
       .findOneAndUpdate(query, update)
       .sort("-generated_timestamp");
   }
