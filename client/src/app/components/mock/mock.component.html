@@ -81,6 +81,19 @@
           query parm
         </label>
       </div>
+      <div class="form-check rest-service-chbox">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          value=""
+          id="response"
+          [checked]="responseChecked"
+          (change)="responseSelected($event)"
+        />
+        <label class="form-check-label" for="query-param">
+          response
+        </label>
+      </div>
     </div>
     <hr />
     <div class="row">
@@ -111,8 +124,18 @@
       >
         Add QueryParam
       </button>
+      <button
+        *ngIf="responseChecked"
+        type="button"
+        id="addqParam"
+        class="btn btn-primary btn-sm btn-grp"
+        (click)="addResponseBody()"
+      >
+        Add Response Body
+      </button>
     </div>
     <br />
+    <hr *ngIf="headers?.length > 0" />
     <p *ngIf="headers?.length > 0"><b>Headers List</b></p>
     <div class="row" *ngFor="let header of headers; let i = index">
       <input
@@ -128,7 +151,9 @@
         placeholder="Enter header value"
       />
     </div>
+    <!--query param-->
     <br />
+    <hr *ngIf="queryParams?.length > 0" />
     <p *ngIf="queryParams?.length > 0"><b>Query Param List</b></p>
     <div class="row" *ngFor="let param of queryParams; let i = index">
       <input
@@ -144,8 +169,10 @@
         placeholder="Enter query param value"
       />
     </div>
+    <!--Request Body-->
     <br />
-    <p *ngIf="showBody"><b>Body Part</b></p>
+    <hr *ngIf="showBody" />
+    <p *ngIf="showBody"><b>Request Body Part</b></p>
     <div class="column body-grp " *ngIf="showBody">
       <button
         type="button"
@@ -189,6 +216,59 @@
           class="btn btn-primary"
           id="multipartDelete[i]"
           (click)="deleteFileUpload(i)"
+        >
+          <i class="fa fa-trash"></i>
+        </button>
+      </div>
+    </div>
+    <!-- Resonse Body-->
+    <br />
+    <hr *ngIf="showBodyResponse" />
+    <p *ngIf="showBodyResponse"><b>Response Body Part</b></p>
+    <div class="column body-grp " *ngIf="showBodyResponse">
+      <button
+        type="button"
+        class="btn btn-primary btn-sm"
+        id="addMultipartResponse"
+        (click)="addMultipartResponse()"
+      >
+        Add Response File
+      </button>
+      <div class="form-group">
+        <label for="contentTypeResponse">Content Type</label>
+        <select class="form-control" id="contentTypeResponse">
+          <option>application/json</option>
+          <option>application/text</option>
+          <option>application/xml</option>
+          <option>multipart/form-data</option>
+          <option>text/plain</option>
+          <option>text/html</option>
+          <option>application/javascript</option>
+        </select>
+      </div>
+      <label for="body"><b>Response body:</b></label>
+      <textarea class="form-control" rows="5" id="responseBody"></textarea>
+      <div
+        class="row multipart-grp"
+        *ngFor="let multipart of responseMultipartFiles; let i = index"
+      >
+        <input
+          type="text"
+          class="form-control input-grp"
+          id="multipartKeyResponse[i]"
+          placeholder="Enter Multipart File Key"
+        />
+        <input
+          type="file"
+          name="multipartFile[i]"
+          class="form-control-file input-grp"
+          id="filemenuResponse[i]"
+          (change)="onFileChange($event, i)"
+        />
+        <button
+          class="btn btn-primary"
+          id="multipartDeleteResponse[i]"
+          (click)="deleteFileUploadResponse(i)"
         >
           <i class="fa fa-trash"></i>
         </button>

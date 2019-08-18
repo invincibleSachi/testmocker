@@ -14,11 +14,15 @@ export class MockComponent implements OnInit {
   headerChecked: boolean = false;
   bodyChecked: boolean = false;
   qParamChecked: boolean = false;
+  responseChecked: boolean = false;
   headers: Headers[] = [];
   queryParams: Headers[] = [];
   multipartFiles: MultipartFileUplod[] = [];
   bodyStr: string = undefined;
+  responseBodyStr: String = undefined;
+  responseMultipartFiles: MultipartFileUplod[] = [];
   showBody: boolean = false;
+  showBodyResponse: boolean = false;
   headerSelected(event: Event) {
     console.log(event);
     if ((<HTMLInputElement>event.target).checked) {
@@ -37,6 +41,17 @@ export class MockComponent implements OnInit {
       this.showBody = false;
       this.multipartFiles = [];
       this.bodyStr = undefined;
+    }
+
+  }
+  responseSelected(event: Event) {
+    if ((<HTMLInputElement>event.target).checked) {
+      this.responseChecked = true;
+    } else {
+      this.responseChecked = false;
+      this.showBody = false;
+      this.responseMultipartFiles = [];
+      this.showBodyResponse = undefined;
     }
 
   }
@@ -61,6 +76,9 @@ export class MockComponent implements OnInit {
   addBody() {
     this.showBody = true;
   }
+  addResponseBody() {
+    this.showBodyResponse = true;
+  }
   addQueryParam() {
     let header = new Headers();
     this.queryParams.push(header);
@@ -77,6 +95,14 @@ export class MockComponent implements OnInit {
 
   deleteFileUpload(index: number) {
     this.multipartFiles.splice(index, 1);
+  }
+
+  addMultipartResponse() {
+    let multipart: MultipartFileUplod = new MultipartFileUplod();
+    this.responseMultipartFiles.push(multipart);
+  }
+  deleteFileUploadResponse(index: number) {
+    this.responseMultipartFiles.splice(index, 1);
   }
 
 }
