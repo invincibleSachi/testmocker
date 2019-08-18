@@ -1,0 +1,16 @@
+.table-info {
+  width: 60%;
+  margin-left: 20px;
+}
+.server {
+  float: right;
+  margin-left: 50px;
+}
+.running-server-status {
+  color: green;
+  font-weight: bold;
+}
+.stopped-server-status {
+  color: red;
+  font-weight: bold;
+}

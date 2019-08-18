@@ -52,6 +52,10 @@ export class HomeComponent implements OnInit {
       this.cookieService.set('isLoggedIn', 'true');
       this.cookieService.set('token', result.token);
       this.cookieService.set('teamName', result.teamName);
+      this.cookieService.set('contactPerson', result.contactPerson);
+      this.cookieService.set('email', result.email);
+      this.cookieService.set('employeeId', result.employeeId);
+      this.cookieService.set('uniqueName', result.uniqueName);
       alert(result.msg);
     }, error => {
       console.log(error);

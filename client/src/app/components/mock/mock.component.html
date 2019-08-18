@@ -1,1 +1,203 @@
-<p>mock works!</p>
+<p-tabView>
+  <p-tabPanel header="Services">
+    <b style="color: blue"><h4>Define a service</h4></b>
+    <form style="width: 360px">
+      <div class="form-group">
+        <label for="serviceName">Service Name</label>
+        <input
+          type="text"
+          class="form-control"
+          id="serviceName"
+          aria-describedby="emailHelp"
+          placeholder="Enter Service Name"
+        />
+      </div>
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+  </p-tabPanel>
+  <p-tabPanel header="Create Rest Endpoint">
+    <b style="color: blue"><h4>Define a Rest Endpoint</h4></b>
+    <form style="width: 360px">
+      <div class="form-group">
+        <label for="apiType">baseUrl:{{ baseUrl }}</label>
+      </div>
+      <div class="form-group">
+        <label for="service">Select Service</label>
+        <select class="form-control" id="service">
+          <option *ngFor="let service of services" [value]="service">
+            {{ service }}
+          </option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="apiType">API Type</label>
+        <select class="form-control" id="apiType">
+          <option>GET</option>
+          <option>POST</option>
+          <option>PUT</option>
+          <option>DELETE</option>
+          <option>OPTION</option>
+          <option>TRACE</option>
+        </select>
+      </div>
+    </form>
+    <div class="row rest-service-attr">
+      <div class="form-check ">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          value=""
+          id="header"
+          [checked]="headerChecked"
+          (change)="headerSelected($event)"
+        />
+        <label class="form-check-label" for="header">
+          headers
+        </label>
+      </div>
+      <div class="form-check rest-service-chbox">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          value=""
+          id="body"
+          [checked]="bodyChecked"
+          (change)="bodySelected($event)"
+        />
+        <label class="form-check-label" for="body">
+          body
+        </label>
+      </div>
+      <div class="form-check rest-service-chbox">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          value=""
+          id="query-param"
+          [checked]="qParamChecked"
+          (change)="qParamSelected($event)"
+        />
+        <label class="form-check-label" for="query-param">
+          query parm
+        </label>
+      </div>
+    </div>
+    <hr />
+    <div class="row">
+      <button
+        *ngIf="headerChecked"
+        type="button"
+        id="addHeader"
+        class="btn btn-primary btn-sm btn-grp"
+        (click)="addHeader()"
+      >
+        Add Header
+      </button>
+      <button
+        *ngIf="bodyChecked"
+        type="button"
+        id="addbody"
+        class="btn btn-primary btn-sm btn-grp"
+        (click)="addBody()"
+      >
+        Add Body
+      </button>
+      <button
+        *ngIf="qParamChecked"
+        type="button"
+        id="addqParam"
+        class="btn btn-primary btn-sm btn-grp"
+        (click)="addQueryParam()"
+      >
+        Add QueryParam
+      </button>
+    </div>
+    <br />
+    <p *ngIf="headers?.length > 0"><b>Headers List</b></p>
+    <div class="row" *ngFor="let header of headers; let i = index">
+      <input
+        type="text"
+        class="form-control input-grp"
+        id="headerkey[i]"
+        placeholder="Enter header Key"
+      />
+      <input
+        type="text"
+        class="form-control input-grp"
+        id="headervalue[i]"
+        placeholder="Enter header value"
+      />
+    </div>
+    <br />
+    <p *ngIf="queryParams?.length > 0"><b>Query Param List</b></p>
+    <div class="row" *ngFor="let param of queryParams; let i = index">
+      <input
+        type="text"
+        class="form-control input-grp"
+        id="qParamKey[i]"
+        placeholder="Enter query param Key"
+      />
+      <input
+        type="text"
+        class="form-control input-grp"
+        id="qParamValue[i]"
+        placeholder="Enter query param value"
+      />
+    </div>
+    <br />
+    <p *ngIf="showBody"><b>Body Part</b></p>
+    <div class="column body-grp " *ngIf="showBody">
+      <button
+        type="button"
+        class="btn btn-primary btn-sm"
+        (click)="addMultipart()"
+      >
+        Add File Upload
+      </button>
+      <div class="form-group">
+        <label for="contentType">Content Type</label>
+        <select class="form-control" id="contentType">
+          <option>application/json</option>
+          <option>application/text</option>
+          <option>application/xml</option>
+          <option>multipart/form-data</option>
+          <option>text/plain</option>
+          <option>text/html</option>
+          <option>application/javascript</option>
+        </select>
+      </div>
+      <label for="body"><b>body:</b></label>
+      <textarea class="form-control" rows="5" id="body"></textarea>
+      <div
+        class="row multipart-grp"
+        *ngFor="let multipart of multipartFiles; let i = index"
+      >
+        <input
+          type="text"
+          class="form-control input-grp"
+          id="multipartKey[i]"
+          placeholder="Enter Multipart File Key"
+        />
+        <input
+          type="file"
+          name="multipartFile[i]"
+          class="form-control-file input-grp"
+          id="filemenu[i]"
+          (change)="onFileChange($event, i)"
+        />
+        <button
+          class="btn btn-primary"
+          id="multipartDelete[i]"
+          (click)="deleteFileUpload(i)"
+        >
+          <i class="fa fa-trash"></i>
+        </button>
+      </div>
+    </div>
+    <hr />
+    <button type="button" class="btn btn-primary">Submit</button>
+  </p-tabPanel>
+  <p-tabPanel header="Create Soap EndPoint">
+    <b style="color: blue"><h4>Define a Soap Endpoint</h4></b>
+  </p-tabPanel>
+</p-tabView>

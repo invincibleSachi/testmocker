@@ -14,6 +14,11 @@ import { CookieService } from 'ngx-cookie-service';
 import { Routes, RouterModule } from '@angular/router';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { MockComponent } from './components/mock/mock.component';
+import { OverlayPanelModule } from 'primeng/overlaypanel';
+import { TabViewModule } from 'primeng/tabview';
+import { FileUploadModule } from 'primeng/fileupload';
+import { ButtonModule } from 'primeng/button';
+import { AccordionModule } from 'primeng/accordion';
 
 const routes: Routes = [
   {
@@ -49,9 +54,15 @@ const routes: Routes = [
     BrowserModule,
     HttpClientModule,
     FormsModule,
+    TabViewModule,
     AppRoutingModule,
     NgbModule,
     RouterModule.forRoot(routes),
+    OverlayPanelModule,
+    FileUploadModule,
+    ButtonModule,
+    AccordionModule,
+    TabViewModule
   ],
   providers: [DatePipe, CookieService],
   bootstrap: [AppComponent]

@@ -1,0 +1,24 @@
+.rest-service-attr {
+  margin-left: 20px;
+}
+
+.rest-service-chbox {
+  margin-left: 10px;
+}
+.btn-grp {
+  margin-left: 20px;
+}
+.input-grp {
+  margin-left: 20px;
+  width: 240px;
+  margin-top: 5px;
+}
+.body-grp {
+  margin-left: 20px;
+  width: 800px;
+  margin-top: 10px;
+}
+.multipart-grp {
+  width: 700px;
+  margin-top: 10px;
+}

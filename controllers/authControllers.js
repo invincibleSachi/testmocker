@@ -42,7 +42,7 @@ router.post(
     let creds = getPwdHash(password);
     let unique_name = teamName
       .trim()
-      .toUpperCase()
+      .toLowerCase()
       .replace(/" "/g, "_");
     var usr = {
       unique_name: unique_name,
@@ -146,6 +146,10 @@ router.post("/login", function(req, res) {
             res.status(400).send({ msg: "something went wrong" });
           } else {
             response.msg = "User Authenticated";
+            response.email = user[0].email;
+            response.contactPerson = user[0].contact_person;
+            response.employeeId = user[0].employeeId;
+            response.uniqueName = user[0].unique_name;
             res.status(200).send(response);
           }
         });
