@@ -11,7 +11,9 @@ var otpSchema = otpModel.otpSchema;
 var constants = require("../constants");
 var emailService = require("../services/emailService");
 var crypto = require("crypto");
-
+var port = require("../models/port");
+var portModel = port.portModel;
+var portSchema = port.portSchema;
 var getPwdHash = services.commons.getPwdHash;
 
 router.post(
@@ -71,8 +73,22 @@ router.post(
                 res.status(500).send({ msg: "some issue at server side" });
               } else {
                 console.log(JSON.stringify(usr));
-                res.status(200).send({ msg: "User successfully created" });
-                sendOtp(unique_name, "user_registration", email);
+                let port = new portModel({ unique_name: unique_name });
+                port.save(function(err) {
+                  if (err) {
+                    console.log(err);
+                    res.status(500).send({ msg: "some issue at server side" });
+                  } else {
+                    res.status(200).send({ msg: "User successfully created" });
+                    sendOtp(unique_name, "user_registration", email);
+                    services.commons.createDirectory(
+                      "./servers/" + unique_name
+                    );
+                    services.commons.createDirectory(
+                      "./templates/" + unique_name
+                    );
+                  }
+                });
               }
             });
           }

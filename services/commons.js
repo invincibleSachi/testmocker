@@ -1,5 +1,6 @@
 var crypto = require("crypto");
 const uuidv4 = require("uuid/v4");
+var mkdirp = require("mkdirp");
 module.exports = {
   getRandomNumber: function(size) {
     let max = Math.pow(10, size) - 1;
@@ -36,5 +37,10 @@ module.exports = {
   },
   getRandomToken: function() {
     return uuidv4();
+  },
+  createDirectory: function(dir) {
+    mkdirp(dir, function(err) {
+      console.log(err);
+    });
   }
 };

@@ -81,6 +81,8 @@ export class HomeComponent implements OnInit {
     this.authService.register(registerReq).subscribe(result => {
       console.log(result);
       alert('OTP sent to your mail.\n Id please verify OTP');
+    }, err => {
+      alert(err.error.msg);
     });
     this.signUpDone = true;
   }
