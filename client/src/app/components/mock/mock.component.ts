@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { TabViewModule } from 'primeng/tabview';
 import { Credentials } from '../../models/credentials';
+import { CookieService } from 'ngx-cookie-service';
 import { Headers } from '../../models/header-model';
+import { CreateService } from '../../models/create-service-req';
+import { CreateMockService } from '../../services/create-mock-service';
 import { MultipartFileUplod } from '../../models/multipart-file-model';
 @Component({
   selector: 'app-mock',
@@ -23,6 +26,8 @@ export class MockComponent implements OnInit {
   responseMultipartFiles: MultipartFileUplod[] = [];
   showBody: boolean = false;
   showBodyResponse: boolean = false;
+  serviceName: string;
+  teamName: string;
   headerSelected(event: Event) {
     console.log(event);
     if ((<HTMLInputElement>event.target).checked) {
@@ -64,7 +69,9 @@ export class MockComponent implements OnInit {
     }
   }
 
-  constructor() { }
+  constructor(private cookieService: CookieService, private createMockService: CreateMockService) {
+    this.teamName = this.cookieService.get('teamName');
+  }
 
   ngOnInit() {
   }
@@ -103,6 +110,18 @@ export class MockComponent implements OnInit {
   }
   deleteFileUploadResponse(index: number) {
     this.responseMultipartFiles.splice(index, 1);
+  }
+
+  createNewService() {
+    var service = new CreateService();
+    service.serviceName = this.serviceName;
+    service.teamName = this.teamName;
+    this.createMockService.createService(service).subscribe(result => {
+      console.log(result);
+      alert(result.msg);
+    }, err => {
+      alert('service already exists');
+    });
   }
 
 }

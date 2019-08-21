@@ -8,11 +8,18 @@
           type="text"
           class="form-control"
           id="serviceName"
-          aria-describedby="emailHelp"
+          name="serviceName"
+          [(ngModel)]="serviceName"
           placeholder="Enter Service Name"
         />
       </div>
-      <button type="submit" class="btn btn-primary">Submit</button>
+      <button
+        type="submit"
+        class="btn btn-primary"
+        (click)="createNewService()"
+      >
+        Submit
+      </button>
     </form>
   </p-tabPanel>
   <p-tabPanel header="Create Rest Endpoint">
