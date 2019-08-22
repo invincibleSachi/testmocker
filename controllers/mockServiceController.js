@@ -25,4 +25,19 @@ router.post("/create-service", function(req, res, next) {
 });
 router.post("/create-api", function(req, res, next) {});
 router.post("/create-soap", function(req, res, next) {});
+router.get("/get-services-list", function(req, resp) {
+  var uniqueName = req.query.uniqueName;
+  console.log(uniqueName);
+  serviceModel
+    .findServiceByUniqueName(uniqueName)
+    .select("service_name")
+    .exec(function(err, result) {
+      console.log(result);
+      if (err) {
+        resp.status(404).send({ msg: "internal error" });
+      } else {
+        resp.status(200).send(result);
+      }
+    });
+});
 module.exports = router;

@@ -1,4 +1,4 @@
-<p-tabView>
+<p-tabView (onChange)="tabchanged($event)">
   <p-tabPanel header="Services">
     <b style="color: blue"><h4>Define a service</h4></b>
     <form style="width: 360px">
@@ -29,9 +29,18 @@
         <label for="apiType">baseUrl:{{ baseUrl }}</label>
       </div>
       <div class="form-group">
+        <label for="serviceName">Api Endpoint Name</label>
+        <input
+          type="text"
+          class="form-control"
+          id="apiEndPoint"
+          name="apiEndPoint"
+          [(ngModel)]="apiEndPoint"
+          placeholder="Enter Service Name"
+        />
         <label for="service">Select Service</label>
         <select class="form-control" id="service">
-          <option *ngFor="let service of services" [value]="service">
+          <option *ngFor="let service of servicesList" [value]="service">
             {{ service }}
           </option>
         </select>

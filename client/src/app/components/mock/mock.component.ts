@@ -6,6 +6,7 @@ import { Headers } from '../../models/header-model';
 import { CreateService } from '../../models/create-service-req';
 import { CreateMockService } from '../../services/create-mock-service';
 import { MultipartFileUplod } from '../../models/multipart-file-model';
+import { GerServiceList } from '../../models/get-service-resp';
 @Component({
   selector: 'app-mock',
   templateUrl: './mock.component.html',
@@ -28,6 +29,8 @@ export class MockComponent implements OnInit {
   showBodyResponse: boolean = false;
   serviceName: string;
   teamName: string;
+  apiEndPoint: string;
+  servicesList: string[] = [];
   headerSelected(event: Event) {
     console.log(event);
     if ((<HTMLInputElement>event.target).checked) {
@@ -71,6 +74,7 @@ export class MockComponent implements OnInit {
 
   constructor(private cookieService: CookieService, private createMockService: CreateMockService) {
     this.teamName = this.cookieService.get('teamName');
+    this.servicesList = [];
   }
 
   ngOnInit() {
@@ -122,6 +126,25 @@ export class MockComponent implements OnInit {
     }, err => {
       alert('service already exists');
     });
+  }
+
+  tabchanged(event: Event) {
+    if (event['index'] == 0) {
+
+    } else if (event['index'] == 1) {
+      this.selectApiEndpointTab();
+    } else if (event['index'] == 2) {
+    }
+  }
+
+
+  selectApiEndpointTab() {
+    this.createMockService.getServices(this.teamName.toLowerCase().replace(' ', '_')).subscribe(result => {
+      result.forEach((res) => {
+        this.servicesList.push(res.service_name);
+      });
+    });
+
   }
 
 }

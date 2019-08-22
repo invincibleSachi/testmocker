@@ -11,6 +11,6 @@ module.exports = {
   serviceSchema: servicesSchema,
   serviceModel: serviceModel,
   findServiceByUniqueName: function(uniqueName) {
-    serviceModel.find({ unique_name: uniqueName });
+    return serviceModel.find({ unique_name: uniqueName });
   }
 };
