@@ -47,7 +47,12 @@
       </div>
       <div class="form-group">
         <label for="apiType">API Type</label>
-        <select class="form-control" id="apiType">
+        <select
+          class="form-control"
+          id="apiType"
+          name="selectedApiType"
+          [(ngModel)]="selectedApiType"
+        >
           <option>GET</option>
           <option>POST</option>
           <option>PUT</option>
@@ -68,7 +73,7 @@
           (change)="headerSelected($event)"
         />
         <label class="form-check-label" for="header">
-          headers
+          Request Headers
         </label>
       </div>
       <div class="form-check rest-service-chbox">
@@ -81,7 +86,7 @@
           (change)="bodySelected($event)"
         />
         <label class="form-check-label" for="body">
-          body
+          Request body
         </label>
       </div>
       <div class="form-check rest-service-chbox">
@@ -94,7 +99,7 @@
           (change)="qParamSelected($event)"
         />
         <label class="form-check-label" for="query-param">
-          query parm
+          Query Parm
         </label>
       </div>
       <div class="form-check rest-service-chbox">
@@ -107,7 +112,21 @@
           (change)="responseSelected($event)"
         />
         <label class="form-check-label" for="query-param">
-          response
+          Response Body
+        </label>
+      </div>
+
+      <div class="form-check rest-service-chbox">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          value=""
+          id="responseHeader"
+          [checked]="responseHeaderChk"
+          (change)="responseHeaderSelected($event)"
+        />
+        <label class="form-check-label" for="query-param">
+          Response headers
         </label>
       </div>
     </div>
@@ -120,7 +139,7 @@
         class="btn btn-primary btn-sm btn-grp"
         (click)="addHeader()"
       >
-        Add Header
+        Add Request Header
       </button>
       <button
         *ngIf="bodyChecked"
@@ -129,7 +148,7 @@
         class="btn btn-primary btn-sm btn-grp"
         (click)="addBody()"
       >
-        Add Body
+        Add Request Body
       </button>
       <button
         *ngIf="qParamChecked"
@@ -143,27 +162,40 @@
       <button
         *ngIf="responseChecked"
         type="button"
-        id="addqParam"
+        id="addbody"
         class="btn btn-primary btn-sm btn-grp"
         (click)="addResponseBody()"
       >
         Add Response Body
       </button>
+      <button
+        *ngIf="responseHeaderChk"
+        type="button"
+        id="addRHeaders"
+        class="btn btn-primary btn-sm btn-grp"
+        (click)="addResponseHeaders()"
+      >
+        Add Response Headers
+      </button>
     </div>
     <br />
     <hr *ngIf="headers?.length > 0" />
-    <p *ngIf="headers?.length > 0"><b>Headers List</b></p>
+    <p *ngIf="headers?.length > 0"><b>Request Headers List</b></p>
     <div class="row" *ngFor="let header of headers; let i = index">
       <input
         type="text"
         class="form-control input-grp"
-        id="headerkey[i]"
+        id="headerKeyRequest[i]"
+        name="headerKeyRequest[i]"
+        [(ngModel)]="headerKeyRequest[i]"
         placeholder="Enter header Key"
       />
       <input
         type="text"
         class="form-control input-grp"
-        id="headervalue[i]"
+        id="headerValueRequest[i]"
+        name="headerValueRequest[i]"
+        [(ngModel)]="headerValueRequest[i]"
         placeholder="Enter header value"
       />
     </div>
@@ -175,13 +207,17 @@
       <input
         type="text"
         class="form-control input-grp"
-        id="qParamKey[i]"
+        id="qParamKeyRequest[i]"
+        name="qParamKeyRequest[i]"
+        [(ngModel)]="qParamKeyRequest[i]"
         placeholder="Enter query param Key"
       />
       <input
         type="text"
         class="form-control input-grp"
-        id="qParamValue[i]"
+        id="qParamValueRequest[i]"
+        name="qParamValueRequest[i]"
+        [(ngModel)]="qParamValueRequest[i]"
         placeholder="Enter query param value"
       />
     </div>
@@ -199,7 +235,11 @@
       </button>
       <div class="form-group">
         <label for="contentType">Content Type</label>
-        <select class="form-control" id="contentType">
+        <select
+          class="form-control"
+          id="contentType"
+          [(ngModel)]="contentTypeRequest"
+        >
           <option>application/json</option>
           <option>application/text</option>
           <option>application/xml</option>
@@ -209,8 +249,13 @@
           <option>application/javascript</option>
         </select>
       </div>
-      <label for="body"><b>body:</b></label>
-      <textarea class="form-control" rows="5" id="body"></textarea>
+      <label for="body"><b>Request Body:</b></label>
+      <textarea
+        class="form-control"
+        rows="5"
+        id="body"
+        [(ngModel)]="bodyRequest"
+      ></textarea>
       <div
         class="row multipart-grp"
         *ngFor="let multipart of multipartFiles; let i = index"
@@ -218,14 +263,18 @@
         <input
           type="text"
           class="form-control input-grp"
-          id="multipartKey[i]"
+          id="multipartKeyRequest[i]"
+          name="multipartKeyRequest[i]"
+          [(ngModel)]="multipartKeyRequest[i]"
           placeholder="Enter Multipart File Key"
         />
         <input
           type="file"
           name="multipartFile[i]"
           class="form-control-file input-grp"
-          id="filemenu[i]"
+          id="multipartFileRequest[i]"
+          name="multipartFileRequest[i]"
+          [(ngModel)]="multipartFileRequest[i]"
           (change)="onFileChange($event, i)"
         />
         <button
@@ -236,6 +285,27 @@
           <i class="fa fa-trash"></i>
         </button>
       </div>
+    </div>
+    <!-- Resonse Headers-->
+    <hr *ngIf="responseHeaders?.length > 0" />
+    <p *ngIf="responseHeaders?.length > 0"><b>Response Headers List</b></p>
+    <div class="row" *ngFor="let rHeaders of responseHeaders; let i = index">
+      <input
+        type="text"
+        class="form-control input-grp"
+        id="headerKeyResponse[i]"
+        name="headerKeyResponse[i]"
+        [(ngModel)]="headerKeyResponse[i]"
+        placeholder="Enter response header Key"
+      />
+      <input
+        type="text"
+        class="form-control input-grp"
+        id="headerValueResponse[i]"
+        name="headerValueResponse[i]"
+        [(ngModel)]="headerValueResponse[i]"
+        placeholder="Enter response header value"
+      />
     </div>
     <!-- Resonse Body-->
     <br />
@@ -252,7 +322,12 @@
       </button>
       <div class="form-group">
         <label for="contentTypeResponse">Content Type</label>
-        <select class="form-control" id="contentTypeResponse">
+        <select
+          class="form-control"
+          id="contentTypeResponse"
+          name="contentTypeResponse"
+          [(ngModel)]="contentTypeResponse"
+        >
           <option>application/json</option>
           <option>application/text</option>
           <option>application/xml</option>
@@ -263,7 +338,14 @@
         </select>
       </div>
       <label for="body"><b>Response body:</b></label>
-      <textarea class="form-control" rows="5" id="responseBody"></textarea>
+      <textarea
+        class="form-control"
+        rows="5"
+        id="responseBody"
+        name="bodyResponse"
+        [(ngModel)]="bodyResponse"
+        placeholder="Enter Response Body"
+      ></textarea>
       <div
         class="row multipart-grp"
         *ngFor="let multipart of responseMultipartFiles; let i = index"
@@ -272,6 +354,8 @@
           type="text"
           class="form-control input-grp"
           id="multipartKeyResponse[i]"
+          name="multipartKeyResponse[i]"
+          [(ngModel)]="multipartKeyResponse[i]"
           placeholder="Enter Multipart File Key"
         />
         <input
@@ -279,6 +363,8 @@
           name="multipartFile[i]"
           class="form-control-file input-grp"
           id="filemenuResponse[i]"
+          name="filemenuResponse[i]"
+          [(ngModel)]="filemenuResponse[i]"
           (change)="onFileChange($event, i)"
         />
         <button
@@ -291,7 +377,13 @@
       </div>
     </div>
     <hr />
-    <button type="button" class="btn btn-primary">Submit</button>
+    <button
+      type="button"
+      class="btn btn-primary"
+      (click)="submitApiEndpointDef()"
+    >
+      Submit
+    </button>
   </p-tabPanel>
   <p-tabPanel header="Create Soap EndPoint">
     <b style="color: blue"><h4>Define a Soap Endpoint</h4></b>

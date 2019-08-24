@@ -1,7 +1,9 @@
 var express = require("express");
 var router = express.Router();
 var serviceModel = require("../models/service");
+var apiEndPointModel = require("../models/api_endpoints");
 var service = serviceModel.serviceModel;
+var apiEndPointModel = apiEndPointModel.apiEndPointModel;
 const { check, validationResult } = require("express-validator");
 
 router.post("/create-service", function(req, res, next) {
@@ -23,7 +25,12 @@ router.post("/create-service", function(req, res, next) {
     }
   });
 });
-router.post("/create-api", function(req, res, next) {});
+router.post("/create-api", function(req, res, next) {
+  let createApi = new apiEndPointModel(req.body);
+  createApi.save(function(err) {
+    console.log(err);
+  });
+});
 router.post("/create-soap", function(req, res, next) {});
 router.get("/get-services-list", function(req, resp) {
   var uniqueName = req.query.uniqueName;
