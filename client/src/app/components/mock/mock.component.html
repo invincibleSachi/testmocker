@@ -29,7 +29,7 @@
         <label for="apiType">baseUrl:{{ baseUrl }}</label>
       </div>
       <div class="form-group">
-        <label for="serviceName">Api Endpoint Name</label>
+        <label for="apiEndPoint">Api Endpoint Name</label>
         <input
           type="text"
           class="form-control"
@@ -39,7 +39,12 @@
           placeholder="Enter Service Name"
         />
         <label for="service">Select Service</label>
-        <select class="form-control" id="service">
+        <select
+          class="form-control"
+          id="service"
+          name="serviceNameFromDropdown"
+          [(ngModel)]="serviceNameFromDropdown"
+        >
           <option *ngFor="let service of servicesList" [value]="service">
             {{ service }}
           </option>
@@ -258,7 +263,7 @@
       ></textarea>
       <div
         class="row multipart-grp"
-        *ngFor="let multipart of multipartFiles; let i = index"
+        *ngFor="let multipart of requestMultipartFiles; let i = index"
       >
         <input
           type="text"
@@ -270,7 +275,6 @@
         />
         <input
           type="file"
-          name="multipartFile[i]"
           class="form-control-file input-grp"
           id="multipartFileRequest[i]"
           name="multipartFileRequest[i]"
@@ -360,11 +364,10 @@
         />
         <input
           type="file"
-          name="multipartFile[i]"
           class="form-control-file input-grp"
-          id="filemenuResponse[i]"
-          name="filemenuResponse[i]"
-          [(ngModel)]="filemenuResponse[i]"
+          id="multipartFileResponse[i]"
+          name="multipartFileResponse[i]"
+          [(ngModel)]="multipartFileResponse[i]"
           (change)="onFileChange($event, i)"
         />
         <button
@@ -377,10 +380,76 @@
       </div>
     </div>
     <hr />
+    <div class="row">
+      <div *ngIf="requestTokenMap?.size > 0">
+        <p><b>Request Body Tokens</b></p>
+        <div
+          class="row multipart-grp"
+          *ngFor="let requestToken of requestTokenMap | keyvalue; let i = index"
+        >
+          <input
+            type="text"
+            class="form-control input-grp"
+            id="requestTokenKey[i]"
+            name="requestTokenKey[i]"
+            value="{{ requestToken.key }}"
+            readonly
+          />
+          <input
+            type="text"
+            class="form-control input-grp"
+            id="requestTokenValue[i]"
+            name="requestTokenValue[i]"
+            [(ngModel)]="requestTokenValue[i]"
+            placeholder="Enter the token value"
+          />
+        </div>
+        <hr />
+      </div>
+      <div *ngIf="responseTokenMap?.size > 0">
+        <p><b>Response Body Tokens</b></p>
+        <div
+          class="row multipart-grp"
+          *ngFor="
+            let responseToken of responseTokenMap | keyvalue;
+            let i = index
+          "
+        >
+          <input
+            type="text"
+            class="form-control input-grp"
+            id="responseTokenVKey[i]"
+            name="responseTokenVKey[i]"
+            value="{{ responseToken.key }}"
+            readonly
+          />
+          <input
+            type="text"
+            class="form-control input-grp"
+            id="responseTokenValue[i]"
+            name="responseTokenValue[i]"
+            [(ngModel)]="responseTokenValue[i]"
+            placeholder="Enter the token value"
+          />
+        </div>
+        <hr />
+      </div>
+    </div>
     <button
       type="button"
+      id="initialSubmitBtn"
       class="btn btn-primary"
       (click)="submitApiEndpointDef()"
+      *ngIf="showSubmitBtn"
+    >
+      Submit
+    </button>
+    <button
+      type="button"
+      id="finalSubmitBtn"
+      class="btn btn-primary"
+      (click)="submitApiFinally()"
+      *ngIf="!showSubmitBtn"
     >
       Submit
     </button>

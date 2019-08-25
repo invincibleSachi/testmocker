@@ -28,7 +28,12 @@ router.post("/create-service", function(req, res, next) {
 router.post("/create-api", function(req, res, next) {
   let createApi = new apiEndPointModel(req.body);
   createApi.save(function(err) {
-    console.log(err);
+    if (err) {
+      console.log(err);
+      res.status(404).send({ msg: "internal error" });
+    } else {
+      res.status(200).send({ msg: "api end point successfully created" });
+    }
   });
 });
 router.post("/create-soap", function(req, res, next) {});

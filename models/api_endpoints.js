@@ -6,21 +6,21 @@ var apiEndPointSchema = new mongoose.Schema({
   serviceName: { type: String, required: true },
   uniqueName: { type: String, required: true },
   apiType: { type: String, required: true },
-  requestHeaders: { type: Map, of: String },
-  requestQueryParams: { type: Map, of: String },
-  responseHeaders: { type: Map, of: String },
-  responseQueryParams: { type: Map, of: String },
+  requestHeaders: { type: Object },
+  requestQueryParams: { type: Object },
+  responseHeaders: { type: Object },
+  responseQueryParams: { type: Object },
   requestBody: {
     contentType: String,
     body: String,
-    multipart: { type: Map, of: String },
-    requestTokens: { type: Map }
+    multipart: { type: Object },
+    tokenMap: { type: Object }
   },
   responseBody: {
     contentType: String,
     body: String,
-    multipart: { type: Map, of: String },
-    responseTokens: { type: Map }
+    multipart: { type: Object },
+    tokenMap: { type: Object }
   }
 });
 

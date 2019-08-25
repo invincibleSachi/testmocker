@@ -8,6 +8,7 @@ import { CreateMockService } from '../../services/create-mock-service';
 import { MultipartFileUplod } from '../../models/multipart-file-model';
 import { GerServiceList } from '../../models/get-service-resp';
 import { ApiEndpointModel } from '../../models/api-endpoint-model';
+import { ApiBody } from '../../models/body-model';
 @Component({
   selector: 'app-mock',
   templateUrl: './mock.component.html',
@@ -23,6 +24,8 @@ export class MockComponent implements OnInit {
   qParamValueRequest: string[];
   headerKeyResponse: string[];
   headerValueResponse: string[];
+  responseTokenValue: any[];
+  requestTokenValue: any[];
   qParamKeyResponse: string[];
   qParamValueResponse: string[];
   contentTypeRequest: string;
@@ -31,20 +34,22 @@ export class MockComponent implements OnInit {
   responseBodyTokens: Map<string, string>;
   bodyRequest: string;
   bodyResponse: string;
-  headerChecked: boolean = false;
-  bodyChecked: boolean = false;
-  qParamChecked: boolean = false;
-  responseChecked: boolean = false;
-  responseHeaderChk: boolean = false;
+  headerChecked = false;
+  bodyChecked = false;
+  qParamChecked = false;
+  responseChecked = false;
+  responseHeaderChk = false;
   headers: Headers[] = [];
   responseHeaders: Headers[] = [];
   queryParams: Headers[] = [];
-  multipartFiles: MultipartFileUplod[] = [];
+  requestMultipartFiles: MultipartFileUplod[] = [];
   bodyStr: string = undefined;
   responseMultipartFiles: MultipartFileUplod[] = [];
-  showBody: boolean = false;
-  showBodyResponse: boolean = false;
+  showBody = false;
+  showBodyResponse = false;
+  showSubmitBtn = false;
   serviceName: string;
+  serviceNameFromDropdown: string;
   setTokens = false;
   teamName: string;
   apiEndPoint: string;
@@ -53,10 +58,12 @@ export class MockComponent implements OnInit {
   multipartFileRequest: string[] = [];
   multipartKeyResponse: string[] = [];
   multipartFileResponse: string[] = [];
-
-  filemenuResponse: string;
+  responseTokenMap: Map<string, any> = new Map<string, any>();
+  requestTokenMap: Map<string, any> = new Map<string, any>();
+  apiEndpointDef: ApiEndpointModel;
 
   constructor(private cookieService: CookieService, private createMockService: CreateMockService) {
+    this.apiEndpointDef = new ApiEndpointModel();
     this.teamName = this.cookieService.get('teamName');
     this.servicesList = [];
     this.headerKeyRequest = [];
@@ -70,18 +77,25 @@ export class MockComponent implements OnInit {
     this.headerValueResponse = [];
     this.contentTypeRequest = "";
     this.bodyRequest = "";
+    this.serviceNameFromDropdown = undefined
     this.headerChecked = false;
     this.bodyChecked = false;
     this.qParamChecked = false;
     this.responseChecked = false;
     this.responseHeaderChk = false;
+    this.showSubmitBtn = true;
     this.setTokens = false;
     this.headers = [];
     this.queryParams = [];
-    this.multipartFiles = [];
     this.responseHeaders = [];
+    this.responseTokenValue = [];
+    this.requestTokenValue = [];
+    this.requestMultipartFiles = [];
+    this.responseMultipartFiles = [];
     this.requestBodyTokens = new Map<string, string>();
     this.responseBodyTokens = new Map<string, string>();
+    this.responseTokenMap = new Map<string, any>();
+    this.requestTokenMap = new Map<string, any>();
   }
 
   headerSelected(event: Event) {
@@ -100,7 +114,7 @@ export class MockComponent implements OnInit {
     } else {
       this.bodyChecked = false;
       this.showBody = false;
-      this.multipartFiles = [];
+      this.requestMultipartFiles = [];
       this.bodyRequest = "";
     }
 
@@ -135,6 +149,39 @@ export class MockComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.apiEndpointDef = new ApiEndpointModel();
+    this.teamName = this.cookieService.get('teamName');
+    this.servicesList = [];
+    this.headerKeyRequest = [];
+    this.headerValueRequest = [];
+    this.qParamKeyRequest = [];
+    this.qParamValueRequest = [];
+    this.headerKeyResponse = [];
+    this.headerValueResponse = [];
+    this.qParamKeyResponse = [];
+    this.qParamValueResponse = [];
+    this.headerValueResponse = [];
+    this.contentTypeRequest = "";
+    this.bodyRequest = "";
+    this.serviceNameFromDropdown = undefined
+    this.headerChecked = false;
+    this.bodyChecked = false;
+    this.qParamChecked = false;
+    this.responseChecked = false;
+    this.responseHeaderChk = false;
+    this.showSubmitBtn = true;
+    this.setTokens = false;
+    this.headers = [];
+    this.queryParams = [];
+    this.responseHeaders = [];
+    this.responseTokenValue = [];
+    this.requestTokenValue = [];
+    this.requestMultipartFiles = [];
+    this.responseMultipartFiles = [];
+    this.requestBodyTokens = new Map<string, string>();
+    this.responseBodyTokens = new Map<string, string>();
+    this.responseTokenMap = new Map<string, any>();
+    this.requestTokenMap = new Map<string, any>();
   }
   addHeader() {
     let header = new Headers();
@@ -158,16 +205,22 @@ export class MockComponent implements OnInit {
   }
 
   onFileChange(event: Event, index: number) {
-
+    let reader = new FileReader();
+    if ((<HTMLInputElement>event.target).files.length > 0) {
+      let file = (<HTMLInputElement>event.target).files[0];
+      let fileName = (<HTMLInputElement>event.target).files[0].name;
+      console.log(fileName);
+    }
   }
+
 
   addMultipart() {
     let multipart: MultipartFileUplod = new MultipartFileUplod();
-    this.multipartFiles.push(multipart);
+    this.requestMultipartFiles.push(multipart);
   }
 
   deleteFileUpload(index: number) {
-    this.multipartFiles.splice(index, 1);
+    this.requestMultipartFiles.splice(index, 1);
   }
 
   addMultipartResponse() {
@@ -211,7 +264,8 @@ export class MockComponent implements OnInit {
   }
 
   submitApiEndpointDef() {
-    if (!this.serviceName) {
+    console.log(this.serviceNameFromDropdown);
+    if (!this.serviceNameFromDropdown) {
       alert('select a service');
     }
 
@@ -245,45 +299,92 @@ export class MockComponent implements OnInit {
     });
     console.log('bodyResponse');
     console.log(this.bodyResponse);
-    this.multipartFiles.forEach((mPartRequest, index) => {
+    this.requestMultipartFiles.forEach((mPartRequest, index) => {
+      let id = "multipartFileRequest[" + index + "]";
+      console.log(id);
+      let file = document.getElementById(id);
+      console.log('file ::' + file);
       reqMultipartFiles.set(this.multipartKeyRequest[index], this.multipartFileRequest[index]);
     });
 
     this.responseMultipartFiles.forEach((mPartRequest, index) => {
-      respMultipartFiles.set(this.multipartKeyResponse[index], this.multipartKeyResponse[index]);
+      respMultipartFiles.set(this.multipartKeyResponse[index], this.multipartFileResponse[index]);
     });
 
-    const apiEndpointDef = new ApiEndpointModel();
-    apiEndpointDef.apiEndpointName = this.apiEndPoint;
-    apiEndpointDef.serviceName = this.serviceName;
-    apiEndpointDef.apiYype = this.selectedApiType;
-    apiEndpointDef.requestHeaders = reqHeadersMap;
-    apiEndpointDef.requestBody.body = this.bodyRequest;
-    apiEndpointDef.requestBody.multipart = reqMultipartFiles;
-    apiEndpointDef.responseBody.multipart = respMultipartFiles;
-    apiEndpointDef.responseBody.body = this.bodyResponse;
-    apiEndpointDef.requestBody.contentType = this.contentTypeRequest;
-    apiEndpointDef.responseBody.contentType = this.contentTypeResponse;
+    const requestBody = new ApiBody();
+    if (this.bodyRequest !== undefined) {
+      requestBody.body = this.bodyRequest.replace(/\n/g, "").replace(/\t/g, "");
+    }
+
+    requestBody.contentType = this.contentTypeRequest;
+    requestBody.multipart = [...reqMultipartFiles];
+    console.log(requestBody);
+    const responseBody = new ApiBody();
+    if (this.bodyResponse != undefined) {
+      responseBody.body = this.bodyResponse.replace(/\n/g, "").replace(/\t/g, "");
+    }
+
+    responseBody.contentType = this.contentTypeResponse;
+    responseBody.multipart = [...respMultipartFiles];
+    console.log(responseBody);
+    this.apiEndpointDef.uniqueName = this.teamName.trim().toLowerCase().replace(/" "/g, "_");
+    this.apiEndpointDef.apiEndpointName = this.apiEndPoint;
+    this.apiEndpointDef.serviceName = this.serviceNameFromDropdown;
+    this.apiEndpointDef.apiType = this.selectedApiType;
+    this.apiEndpointDef.requestHeaders = [...reqHeadersMap];
+    this.apiEndpointDef.responseHeaders = [...respHeadersMap];
+    this.apiEndpointDef.requestBody = requestBody;
+    this.apiEndpointDef.responseBody = responseBody;
     const regex = /##.*##/gi;
-    const responseTokenMap: Map<string, any> = new Map<string, any>();
-    const requestTokenMap: Map<string, any> = new Map<string, any>();
+
     if (this.bodyRequest) {
       const requestTokens = this.bodyRequest.match(regex);
 
       requestTokens.forEach(token => {
-        requestTokenMap.set(token, undefined);
+        this.requestTokenMap.set(token, undefined);
       });
     }
     if (this.bodyResponse) {
 
       const responseTokens = this.bodyResponse.match(regex);
       responseTokens.forEach(token => {
-        responseTokenMap.set(token, undefined);
+        this.responseTokenMap.set(token, undefined);
       });
     }
 
-    if (responseTokenMap.size > 0 || requestTokenMap.size > 0) {
+    if (this.responseTokenMap.size > 0 || this.requestTokenMap.size > 0) {
+      this.showSubmitBtn = false;
+    } else {
+      this.createMockService.createApiEndPoint(this.apiEndpointDef).subscribe(result => {
+        console.log(result.msg);
+      });
     }
+  }
+  submitApiFinally() {
+    console.log(this.requestTokenMap);
+    if (this.requestTokenMap.size > 0) {
+      let index = 0;
+      for (let entry of this.requestTokenMap.entries()) {
+        this.requestTokenMap.set(entry[0], this.requestTokenValue[index++]);
+      }
+      this.apiEndpointDef.requestBody.tokenMap = [...this.requestTokenMap];
+    }
+
+    if (this.responseTokenMap.size > 0) {
+      let index = 0;
+      for (let entry of this.responseTokenMap.entries()) {
+        this.responseTokenMap.set(entry[0], this.responseTokenValue[index++]);
+      }
+      this.apiEndpointDef.responseBody.tokenMap = [...this.responseTokenMap];
+    }
+    console.log(this.apiEndpointDef);
+    this.createMockService.createApiEndPoint(this.apiEndpointDef).subscribe(result => {
+      console.log(result.msg);
+      alert(result.msg);
+    }, err => {
+      console.log(err);
+      alert(err);
+    });
 
   }
 

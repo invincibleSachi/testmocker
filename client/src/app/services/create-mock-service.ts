@@ -27,7 +27,7 @@ export class CreateMockService {
 
   createApiEndPoint(createApiEndpoint: ApiEndpointModel): Observable<CommonHttpResponse> {
     return this.http.post<CommonHttpResponse>(
-      `${environment.API_ENDPOINT}/mock/create-service`, createApiEndpoint,
+      `${environment.API_ENDPOINT}/mock/create-api`, createApiEndpoint,
     );
   }
 }
