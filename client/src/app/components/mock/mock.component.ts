@@ -28,6 +28,8 @@ export class MockComponent implements OnInit {
   requestTokenValue: any[];
   qParamKeyResponse: string[];
   qParamValueResponse: string[];
+  requestFiles:File[];
+  responseFiles:File[];
   contentTypeRequest: string;
   contentTypeResponse: string;
   requestBodyTokens: Map<string, string>;
@@ -204,12 +206,15 @@ export class MockComponent implements OnInit {
     this.queryParams.push(header);
   }
 
-  onFileChange(event: Event, index: number) {
+  onFileChange(event: Event, index: number,type:string) {
     let reader = new FileReader();
     if ((<HTMLInputElement>event.target).files.length > 0) {
       let file = (<HTMLInputElement>event.target).files[0];
       let fileName = (<HTMLInputElement>event.target).files[0].name;
       console.log(fileName);
+      if(type==='request'){
+
+      }
     }
   }
 
@@ -229,6 +234,14 @@ export class MockComponent implements OnInit {
   }
   deleteFileUploadResponse(index: number) {
     this.responseMultipartFiles.splice(index, 1);
+  }
+
+  fileUploadRequest(index:number){
+
+  }
+
+  fileUploadResponse(index:number){
+
   }
 
   createNewService() {
