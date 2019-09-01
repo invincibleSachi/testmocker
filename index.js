@@ -5,6 +5,7 @@ var authController = require("./controllers/authControllers");
 var mockController = require("./controllers/mockServiceController");
 const mongoose = require("mongoose");
 var constants = require("./constants");
+const multer = require("multer");
 var cors = require("cors");
 
 mongoose.connect(constants.dbConn, {

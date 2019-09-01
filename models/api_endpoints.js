@@ -13,13 +13,11 @@ var apiEndPointSchema = new mongoose.Schema({
   requestBody: {
     contentType: String,
     body: String,
-    multipart: { type: Object },
     tokenMap: { type: Object }
   },
   responseBody: {
     contentType: String,
     body: String,
-    multipart: { type: Object },
     tokenMap: { type: Object }
   }
 });

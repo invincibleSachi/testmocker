@@ -279,12 +279,12 @@
           id="multipartFileRequest[i]"
           name="multipartFileRequest[i]"
           [(ngModel)]="multipartFileRequest[i]"
-          (change)="onFileChange($event, i)"
+          (change)="onFileChange($event, i, 'request')"
         />
         <button
           class="btn btn-primary btn-grp"
           id="multipartuploadRequest[i]"
-          (click)="fileUploadRequest(i)"
+          (click)="onFileUpload(i, 'request')"
         >
           <i class="fa fa-upload"></i>
         </button>
@@ -375,12 +375,12 @@
           id="multipartFileResponse[i]"
           name="multipartFileResponse[i]"
           [(ngModel)]="multipartFileResponse[i]"
-          (change)="onFileChange($event, i)"
+          (change)="onFileChange($event, i, 'response')"
         />
         <button
           class="btn btn-primary btn-grp"
           id="multipartuploadResponse[i]"
-          (click)="fileUploadResponse(i)"
+          (click)="onFileUpload(i, 'response')"
         >
           <i class="fa fa-upload"></i>
         </button>

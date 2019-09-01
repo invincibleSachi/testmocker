@@ -28,8 +28,6 @@ export class MockComponent implements OnInit {
   requestTokenValue: any[];
   qParamKeyResponse: string[];
   qParamValueResponse: string[];
-  requestFiles:File[];
-  responseFiles:File[];
   contentTypeRequest: string;
   contentTypeResponse: string;
   requestBodyTokens: Map<string, string>;
@@ -57,12 +55,14 @@ export class MockComponent implements OnInit {
   apiEndPoint: string;
   servicesList: string[] = [];
   multipartKeyRequest: string[] = [];
-  multipartFileRequest: string[] = [];
+  multipartFileRequest: File[] = [];
   multipartKeyResponse: string[] = [];
-  multipartFileResponse: string[] = [];
+  multipartFileResponse: File[] = [];
   responseTokenMap: Map<string, any> = new Map<string, any>();
   requestTokenMap: Map<string, any> = new Map<string, any>();
   apiEndpointDef: ApiEndpointModel;
+  requestMultiparts: Map<string, any> = new Map<string, any>();
+  responseMultiparts: Map<string, any> = new Map<string, any>();
 
   constructor(private cookieService: CookieService, private createMockService: CreateMockService) {
     this.apiEndpointDef = new ApiEndpointModel();
@@ -98,6 +98,8 @@ export class MockComponent implements OnInit {
     this.responseBodyTokens = new Map<string, string>();
     this.responseTokenMap = new Map<string, any>();
     this.requestTokenMap = new Map<string, any>();
+    this.requestMultiparts = new Map<string, any>();
+    this.responseMultiparts = new Map<string, any>();
   }
 
   headerSelected(event: Event) {
@@ -206,14 +208,20 @@ export class MockComponent implements OnInit {
     this.queryParams.push(header);
   }
 
-  onFileChange(event: Event, index: number,type:string) {
+  onFileChange(event: Event, index: number, type: string) {
     let reader = new FileReader();
+
     if ((<HTMLInputElement>event.target).files.length > 0) {
-      let file = (<HTMLInputElement>event.target).files[0];
+      let file: File = (<HTMLInputElement>event.target).files[0];
       let fileName = (<HTMLInputElement>event.target).files[0].name;
       console.log(fileName);
-      if(type==='request'){
-
+      console.log(type);
+      if (type === 'request') {
+        this.requestMultipartFiles[index].key = this.multipartKeyRequest[index];
+        this.requestMultipartFiles[index].file = this.multipartFileRequest[index];
+      } else if (type === 'response') {
+        this.responseMultipartFiles[index].key = this.multipartKeyResponse[index];
+        this.responseMultipartFiles[index].file = this.multipartFileResponse[index];
       }
     }
   }
@@ -236,13 +244,32 @@ export class MockComponent implements OnInit {
     this.responseMultipartFiles.splice(index, 1);
   }
 
-  fileUploadRequest(index:number){
+  onFileUpload(index: number, type: string) {
+    console.log(type);
+    const reader = new FileReader();
+    if (type === 'request') {
+      if (this.requestMultipartFiles[index].file.name.match('txt')) {
+        reader.readAsText(this.multipartFileRequest[index], "UTF-8");
+      } else {
+        reader.readAsBinaryString(this.multipartFileRequest[index]);
+      }
 
+      reader.onload = () => {
+        this.responseMultiparts.set(this.multipartKeyRequest[index], reader.result);
+      };
+    } else if (type === 'response') {
+      if (this.responseMultipartFiles[index].file.name.match('txt')) {
+        reader.readAsText(this.multipartFileResponse[index], "UTF-8");
+      } else {
+        reader.readAsBinaryString(this.multipartFileResponse[index]);
+      }
+
+      reader.onload = () => {
+        this.responseMultiparts.set(this.multipartKeyResponse[index], reader.result);
+      };
+    }
   }
 
-  fileUploadResponse(index:number){
-
-  }
 
   createNewService() {
     var service = new CreateService();
@@ -290,8 +317,8 @@ export class MockComponent implements OnInit {
     const reqHeadersMap: Map<string, string> = new Map<string, string>();
     const reqQParamMap: Map<string, string> = new Map<string, string>();
     const respHeadersMap: Map<string, string> = new Map<string, string>();
-    const reqMultipartFiles: Map<string, string> = new Map<string, string>();
-    const respMultipartFiles: Map<string, string> = new Map<string, string>();
+    const reqMultipartFiles: Map<string, File> = new Map<string, File>();
+    const respMultipartFiles: Map<string, File> = new Map<string, File>();
 
     console.log('headers');
     this.headers.forEach((header, index) => {
