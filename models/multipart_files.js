@@ -5,6 +5,7 @@ var multiPartFileSchema = new mongoose.Schema({
   service_name: { type: String, required: true },
   api_name: { type: String, required: true },
   file_type: { type: String, required: true },
+  file_key: { type: String },
   file_name: { type: String, required: true }
 });
 //servicesSchema.index({ unique_name: 1, service_name: 2 }, { unique: true });

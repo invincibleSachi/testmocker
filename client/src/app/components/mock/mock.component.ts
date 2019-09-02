@@ -58,11 +58,11 @@ export class MockComponent implements OnInit {
   multipartFileRequest: File[] = [];
   multipartKeyResponse: string[] = [];
   multipartFileResponse: File[] = [];
+  addedRequestFiles: File[] = [];
+  addedResponseFiles: File[] = [];
   responseTokenMap: Map<string, any> = new Map<string, any>();
   requestTokenMap: Map<string, any> = new Map<string, any>();
   apiEndpointDef: ApiEndpointModel;
-  requestMultiparts: Map<string, any> = new Map<string, any>();
-  responseMultiparts: Map<string, any> = new Map<string, any>();
 
   constructor(private cookieService: CookieService, private createMockService: CreateMockService) {
     this.apiEndpointDef = new ApiEndpointModel();
@@ -98,8 +98,6 @@ export class MockComponent implements OnInit {
     this.responseBodyTokens = new Map<string, string>();
     this.responseTokenMap = new Map<string, any>();
     this.requestTokenMap = new Map<string, any>();
-    this.requestMultiparts = new Map<string, any>();
-    this.responseMultiparts = new Map<string, any>();
   }
 
   headerSelected(event: Event) {
@@ -186,6 +184,8 @@ export class MockComponent implements OnInit {
     this.responseBodyTokens = new Map<string, string>();
     this.responseTokenMap = new Map<string, any>();
     this.requestTokenMap = new Map<string, any>();
+    this.addedRequestFiles = [];
+    this.addedResponseFiles = [];
   }
   addHeader() {
     let header = new Headers();
@@ -209,7 +209,6 @@ export class MockComponent implements OnInit {
   }
 
   onFileChange(event: Event, index: number, type: string) {
-    let reader = new FileReader();
 
     if ((<HTMLInputElement>event.target).files.length > 0) {
       let file: File = (<HTMLInputElement>event.target).files[0];
@@ -217,11 +216,9 @@ export class MockComponent implements OnInit {
       console.log(fileName);
       console.log(type);
       if (type === 'request') {
-        this.requestMultipartFiles[index].key = this.multipartKeyRequest[index];
-        this.requestMultipartFiles[index].file = this.multipartFileRequest[index];
+        this.addedRequestFiles.push(file);
       } else if (type === 'response') {
-        this.responseMultipartFiles[index].key = this.multipartKeyResponse[index];
-        this.responseMultipartFiles[index].file = this.multipartFileResponse[index];
+        this.addedResponseFiles.push(file);
       }
     }
   }
@@ -246,28 +243,25 @@ export class MockComponent implements OnInit {
 
   onFileUpload(index: number, type: string) {
     console.log(type);
-    const reader = new FileReader();
+    let file;
     if (type === 'request') {
-      if (this.requestMultipartFiles[index].file.name.match('txt')) {
-        reader.readAsText(this.multipartFileRequest[index], "UTF-8");
-      } else {
-        reader.readAsBinaryString(this.multipartFileRequest[index]);
-      }
-
-      reader.onload = () => {
-        this.responseMultiparts.set(this.multipartKeyRequest[index], reader.result);
-      };
+      file = this.addedRequestFiles[index];
     } else if (type === 'response') {
-      if (this.responseMultipartFiles[index].file.name.match('txt')) {
-        reader.readAsText(this.multipartFileResponse[index], "UTF-8");
-      } else {
-        reader.readAsBinaryString(this.multipartFileResponse[index]);
-      }
-
-      reader.onload = () => {
-        this.responseMultiparts.set(this.multipartKeyResponse[index], reader.result);
-      };
+      file = this.addedResponseFiles[index];
     }
+
+    let formData = new FormData();
+    formData.append('uniqueName', this.teamName.trim().toLowerCase().replace(/" "/g, '_'));
+    formData.append('serviceName', this.serviceNameFromDropdown);
+    formData.append('apiEndoint', this.apiEndPoint);
+    formData.append('fileKey', this.multipartKeyRequest[index]);
+    formData.append('fileName', this.multipartKeyRequest[index]);
+    formData.append('file', file, file.name);
+    this.createMockService.uploadMultipartFile(formData, type).subscribe(result => {
+      console.log(result);
+      alert(result.msg);
+    });
+
   }
 
 
@@ -340,10 +334,6 @@ export class MockComponent implements OnInit {
     console.log('bodyResponse');
     console.log(this.bodyResponse);
     this.requestMultipartFiles.forEach((mPartRequest, index) => {
-      let id = "multipartFileRequest[" + index + "]";
-      console.log(id);
-      let file = document.getElementById(id);
-      console.log('file ::' + file);
       reqMultipartFiles.set(this.multipartKeyRequest[index], this.multipartFileRequest[index]);
     });
 
@@ -358,6 +348,8 @@ export class MockComponent implements OnInit {
 
     requestBody.contentType = this.contentTypeRequest;
     requestBody.multipart = [...reqMultipartFiles];
+
+
     console.log(requestBody);
     const responseBody = new ApiBody();
     if (this.bodyResponse != undefined) {

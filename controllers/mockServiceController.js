@@ -54,13 +54,15 @@ router.post("/multipart/:type", upload.single("file"), function(req, res) {
   var uniqueName = req.body.uniqueName;
   var serviceName = req.body.serviceName;
   var apiName = req.body.apiEndoint;
+  var fileKey = req.body.fileKey;
   var type = req.params.type;
   let multipartObj = {
     unique_name: uniqueName,
     service_name: serviceName,
     api_name: apiName,
     file_type: type,
-    file_name: req.file.filename
+    file_name: req.file.filename,
+    file_key: fileKey
   };
   var multipartModel = new multipart(multipartObj);
   multipartModel.save(function(err) {
