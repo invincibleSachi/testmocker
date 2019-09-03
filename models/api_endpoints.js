@@ -2,7 +2,7 @@ var mongoose = require("mongoose");
 var constant = require("../constants");
 
 var apiEndPointSchema = new mongoose.Schema({
-  apiEndpointName: { type: String, required: true },
+  apiEndpointName: { type: String, required: true,unique:true },
   serviceName: { type: String, required: true },
   uniqueName: { type: String, required: true },
   apiType: { type: String, required: true },
@@ -23,7 +23,6 @@ var apiEndPointSchema = new mongoose.Schema({
     multipart: { type: Object }
   }
 });
-
 var apiEndPointModel = mongoose.model("api_endpoint", apiEndPointSchema);
 
 module.exports = {

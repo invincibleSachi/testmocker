@@ -8,6 +8,7 @@ import { CommonHttpResponse } from '../models/common-resp';
 import { GerServiceList } from '../models/get-service-resp';
 import { ApiEndpointModel } from '../models/api-endpoint-model';
 import { MultipartModel } from '../models/upload-multipart';
+import { SoapEndPointsModel } from '../models/soap-api-endpoints';
 
 @Injectable({
   providedIn: 'root'
@@ -30,6 +31,12 @@ export class CreateMockService {
   createApiEndPoint(createApiEndpoint: ApiEndpointModel): Observable<CommonHttpResponse> {
     return this.http.post<CommonHttpResponse>(
       `${environment.API_ENDPOINT}/mock/create-api`, createApiEndpoint,
+    );
+  }
+
+  createSoapEndPoint(createSoapEndpoint: SoapEndPointsModel): Observable<CommonHttpResponse> {
+    return this.http.post<CommonHttpResponse>(
+      `${environment.API_ENDPOINT}/mock/create-soap`, createSoapEndpoint,
     );
   }
 

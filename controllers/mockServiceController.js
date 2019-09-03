@@ -2,9 +2,11 @@ var express = require("express");
 var router = express.Router();
 var serviceModel = require("../models/service");
 var apiEndPointModel = require("../models/api_endpoints");
+var soapEndPointModel = require("../models/soap_endpoints");
 var multipartModel = require("../models/multipart_files");
 var service = serviceModel.serviceModel;
 var apiEndPointModel = apiEndPointModel.apiEndPointModel;
+var soapEndPointModel = soapEndPointModel.soapEndPointModel;
 var multipart = multipartModel.multipartModel;
 const { check, validationResult } = require("express-validator");
 let multer = require("multer");
@@ -74,7 +76,17 @@ router.post("/multipart/:type", upload.single("file"), function(req, res) {
     }
   });
 });
-router.post("/create-soap", function(req, res, next) {});
+router.post("/create-soap", function(req, res, next) {
+  let createApi = new soapEndPointModel(req.body);
+  createApi.save(function(err) {
+    if (err) {
+      console.log(err);
+      res.status(404).send({ msg: "internal error" });
+    } else {
+      res.status(200).send({ msg: "soap end point successfully created" });
+    }
+  });
+});
 router.get("/get-services-list", function(req, resp) {
   var uniqueName = req.query.uniqueName;
   console.log(uniqueName);

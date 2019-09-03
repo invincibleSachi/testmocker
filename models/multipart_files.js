@@ -3,7 +3,7 @@ var mongoose = require("mongoose");
 var multiPartFileSchema = new mongoose.Schema({
   unique_name: { type: String, required: true },
   service_name: { type: String, required: true },
-  api_name: { type: String, required: true },
+  api_name: { type: String, required: true,unique:true },
   file_type: { type: String, required: true },
   file_key: { type: String },
   file_name: { type: String, required: true }

@@ -142,7 +142,7 @@
         type="button"
         id="addHeader"
         class="btn btn-primary btn-sm btn-grp"
-        (click)="addHeader()"
+        (click)="addHeader('api','request')"
       >
         Add Request Header
       </button>
@@ -160,7 +160,7 @@
         type="button"
         id="addqParam"
         class="btn btn-primary btn-sm btn-grp"
-        (click)="addQueryParam()"
+        (click)="addHeader('api','queryParam')"
       >
         Add QueryParam
       </button>
@@ -470,5 +470,188 @@
   </p-tabPanel>
   <p-tabPanel header="Create Soap EndPoint">
     <b style="color: blue"><h4>Define a Soap Endpoint</h4></b>
+    <form style="width: 660px">
+      <div class="form-group">
+          <label for="service"><b>Select Service</b></label>
+          <select
+            class="form-control"
+            id="service"
+            name="serviceNameFromDropdown"
+            [(ngModel)]="serviceNameFromDropdown"
+          >
+            <option *ngFor="let service of servicesList" [value]="service">
+              {{ service }}
+            </option>
+          </select>
+          <br>
+        <label for="serviceName"><b>Soap Endpoint Name</b></label>
+        <input
+          type="text"
+          class="form-control"
+          id="soapEndPoint"
+          name="soapEndPoint"
+          [(ngModel)]="soapEndPoint"
+          placeholder="Enter Soap Endpoint Name"
+        />
+        <br>
+        <div class="row">
+            <button
+              type="button"
+              id="soapaddHeaderRequest"
+              class="btn btn-primary btn-sm btn-grp"
+              (click)="addHeader('soap','request')"
+            >
+              Add Request Header
+            </button>
+            <button
+              type="button"
+              id="soapHeaderResponse"
+              class="btn btn-primary btn-sm btn-grp"
+              (click)="addHeader('soap','response')"
+            >
+              Add Request Body
+            </button>
+        </div>
+        <br>
+        <!-- Request Headers-->
+    <hr *ngIf="soapRequestHeaders?.length > 0" />
+    <p *ngIf="soapRequestHeaders?.length > 0"><b>Response Headers List</b></p>
+    <div class="row" *ngFor="let rHeaders of soapRequestHeaders; let i = index">
+      <input
+        type="text"
+        class="form-control input-grp"
+        id="soapHeaderKeyResponse[i]"
+        name="soapHeaderKeyResponse[i]"
+        [(ngModel)]="soapHeaderKeyResponse[i]"
+        placeholder="Enter Request header Key"
+      />
+      <input
+        type="text"
+        class="form-control input-grp"
+        id="soapHeaderValueResponse[i]"
+        name="soapHeaderValueResponse[i]"
+        [(ngModel)]="soapHeaderValueResponse[i]"
+        placeholder="Enter Request header value"
+      />
+    </div>
+    <br>
+    <!-- Response Headers-->
+<hr *ngIf="soapResponseHeaders?.length > 0" />
+<p *ngIf="soapResponseHeaders?.length > 0"><b>Response Headers List</b></p>
+<div class="row" *ngFor="let rHeaders of soapResponseHeaders; let i = index">
+  <input
+    type="text"
+    class="form-control input-grp"
+    id="soapHeaderKeyResponse[i]"
+    name="soapHeaderKeyResponse[i]"
+    [(ngModel)]="soapHeaderKeyResponse[i]"
+    placeholder="Enter Response header Key"
+  />
+  <input
+    type="text"
+    class="form-control input-grp"
+    id="soapHeaderValueResponse[i]"
+    name="soapHeaderValueResponse[i]"
+    [(ngModel)]="soapHeaderValueResponse[i]"
+    placeholder="Enter Response header value"
+  />
+</div>
+<br>
+        <label for="soapBody"><b>SOAP Request Body</b></label>
+        <textarea
+        class="form-control"
+        rows="5"
+        id="soapBody"
+        name="soapBody"
+        [(ngModel)]="soapBody"
+        placeholder="Enter Soap Request Body"
+      ></textarea>
+      <br>
+        <label for="soapResponse"><b>SOAP Response Body</b></label>
+        <textarea
+        class="form-control"
+        rows="5"
+        id="soapResponse"
+        name="soapResponse"
+        [(ngModel)]="soapResponse"
+        placeholder="Enter Soap Response Body"
+      ></textarea>
+      </div>
+      <hr />
+      <div class="row">
+        <div *ngIf="soapRequestTokenMap?.size > 0">
+          <p><b>Request Body Tokens</b></p>
+          <div
+            class="row multipart-grp"
+            *ngFor="let requestToken of soapRequestTokenMap | keyvalue; let i = index"
+          >
+            <input
+              type="text"
+              class="form-control input-grp"
+              id="soapRequestTokenKey[i]"
+              name="soapRequestTokenKey[i]"
+              value="{{ requestToken.key }}"
+              readonly
+            />
+            <input
+              type="text"
+              class="form-control input-grp"
+              id="soapRequestTokenValue[i]"
+              name="soapRequestTokenValue[i]"
+              [(ngModel)]="soapRequestTokenValue[i]"
+              placeholder="Enter the token value"
+            />
+          </div>
+          <hr />
+        </div>
+      
+        <div *ngIf="soapResponseTokenMap?.size > 0">
+          <p><b>Response Body Tokens</b></p>
+          <div
+            class="row multipart-grp"
+            *ngFor="
+              let responseToken of soapResponseTokenMap | keyvalue;
+              let i = index
+            "
+          >
+            <input
+              type="text"
+              class="form-control input-grp"
+              id="soapResponseTokenKey[i]"
+              name="soapResponseTokenKey[i]"
+              value="{{ responseToken.key }}"
+              readonly
+            />
+            <input
+              type="text"
+              class="form-control input-grp"
+              id="soapResponseTokenValue[i]"
+              name="soapResponseTokenValue[i]"
+              [(ngModel)]="soapResponseTokenValue[i]"
+              placeholder="Enter the token value"
+            />
+          </div>
+          <hr />
+        </div>
+      </div>
+      <button
+        *ngIf="!enableSoapSecondaryBtn"
+        type="submit"
+        class="btn btn-primary"
+        id="soapPrimary"
+        (click)="addSoapEndpoint()"
+      >
+        Submit
+      </button>
+      <button
+        *ngIf="enableSoapSecondaryBtn"
+        type="submit"
+        class="btn btn-primary"
+        id="soapSecondary"
+        (click)="submitSoapEndpointFinally()"
+      >
+        Submit
+      </button>
+    </form>
   </p-tabPanel>
 </p-tabView>
