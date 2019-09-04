@@ -87,7 +87,10 @@ router.post(
                     services.commons.createDirectory(
                       "./templates/" + unique_name
                     );
-                    services.commons.copyFile('../templates/','../servers/'+unique_name);
+                    services.commons.copyFile(
+                      "../templates/",
+                      "../servers/" + unique_name
+                    );
                   }
                 });
               }
@@ -177,6 +180,20 @@ router.post("/login", function(req, res) {
       res.status(404).send({ msg: "user not authenticated" });
     }
   });
+});
+/**
+ * delete tenant folder
+ * copy fresh baseline to tenant folder
+ * read db and add routes to index.js file
+ * start server
+ */
+router.post("/start-services", function(req, res) {
+  var uniqueName = req.body.uniqueName;
+  services.commons.deleteFolder("../../templates/" + uniqueName);
+  services.commons.copyFolder(
+    "../../templates/baseline",
+    "../../templates/" + uniqueName
+  );
 });
 
 var sendOtp = function(unique_name, purpose, email) {

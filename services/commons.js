@@ -1,7 +1,9 @@
 var crypto = require("crypto");
 const uuidv4 = require("uuid/v4");
 var mkdirp = require("mkdirp");
-const fs = require('fs');
+const fs = require("fs");
+const os = require("os");
+const { exec } = require("child_process");
 module.exports = {
   getRandomNumber: function(size) {
     let max = Math.pow(10, size) - 1;
@@ -44,10 +46,36 @@ module.exports = {
       console.log(err);
     });
   },
-  copyFile:function(srcFile,destFile){
-    fs.copyFileSync(srcFile, destFile, (err) => {
+  copyFile: function(srcFile, destFile) {
+    fs.copyFileSync(srcFile, destFile, err => {
       if (err) throw err;
       console.log(err);
     });
+  },
+  deleteFolder: function(folderPath) {
+    let cmd = "rm -rf " + folderPath;
+    this.executeOsCommand(cmd);
+    cmd = "rmdir " + folderPath;
+    this.executeOsCommand(cmd);
+  },
+  copyFolder: function(srcFolder, destFolder) {
+    let cmd = "cp " + srcFolder + " " + destFolder;
+    this.executeOsCommand(cmd);
+  },
+  executeOsCommand: function(cmd) {
+    exec(cmd, (err, stdout, stderr) => {
+      if (err) {
+        console.log("cant run command " + cmd);
+        return;
+      }
+      console.log(`stdout: ${stdout}`);
+      console.log(`stderr: ${stderr}`);
+    });
+  },
+  readFileGetContent: function(fileName) {
+    return fs.readFileSync(fileName);
+  },
+  append2File: function(filename, appendStr) {
+    return fs.appendFileSync(appendStr);
   }
 };
