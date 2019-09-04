@@ -1,6 +1,7 @@
 var crypto = require("crypto");
 const uuidv4 = require("uuid/v4");
 var mkdirp = require("mkdirp");
+const fs = require('fs');
 module.exports = {
   getRandomNumber: function(size) {
     let max = Math.pow(10, size) - 1;
@@ -40,6 +41,12 @@ module.exports = {
   },
   createDirectory: function(dir) {
     mkdirp(dir, function(err) {
+      console.log(err);
+    });
+  },
+  copyFile:function(srcFile,destFile){
+    fs.copyFileSync(srcFile, destFile, (err) => {
+      if (err) throw err;
       console.log(err);
     });
   }

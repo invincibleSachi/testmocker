@@ -50,6 +50,7 @@ export class DashboardComponent implements OnInit {
       this.buttonClass = 'btn btn-success btn-lg';
       this.serverIconClass = 'fa fa-stop';
       this.serverBtnText = 'STOP';
+      
     } else {
       this.serverStatus = 'STOPPED';
       this.serverStatusClass = 'stopped-server-status';

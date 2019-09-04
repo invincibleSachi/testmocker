@@ -87,6 +87,7 @@ router.post(
                     services.commons.createDirectory(
                       "./templates/" + unique_name
                     );
+                    services.commons.copyFile('../templates/','../servers/'+unique_name);
                   }
                 });
               }
