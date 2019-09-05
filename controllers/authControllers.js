@@ -15,6 +15,11 @@ var port = require("../models/port");
 var portModel = port.portModel;
 var portSchema = port.portSchema;
 var getPwdHash = services.commons.getPwdHash;
+var serviceModel = require("../models/service");
+var apiEndPoint = require("../models/api_endpoints");
+var soapEndPoint = require("../models/soap_endpoints");
+var multipart = require("../models/multipart_files");
+var apiEndPointModel=apiEndPoint.apiEndPointModel;
 
 router.post(
   "/register",
@@ -194,6 +199,9 @@ router.post("/start-services", function(req, res) {
     "../../templates/baseline",
     "../../templates/" + uniqueName
   );
+  apiEndPointModel.findAllApiEndpointsByUniqueName(uniqueName).exec(function(err,apiEndpoints){
+    console.log(apiEndpoints);
+  });
 });
 
 var sendOtp = function(unique_name, purpose, email) {

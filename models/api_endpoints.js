@@ -29,15 +29,19 @@ module.exports = {
   apiEndPointModel: apiEndPointModel,
   apiEndPointSchema: apiEndPointSchema,
 
-  findApiEndPointByUniqueName: function(
+  findApiEndPointByAttributes: function(
     uniqueName,
     serviceName,
     apiEndPointName
   ) {
-    portModel.find({
+    return apiEndPointModel.find({
       uniqueName: uniqueName,
       serviceName: serviceName,
       apiEndpointName: apiEndPointName
     });
+  },
+
+  findAllApiEndpointsByUniqueName: function(uniqueName){
+    return apiEndPointModel.find({uniqueName:uniqueName})
   }
 };
