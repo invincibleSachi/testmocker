@@ -86,13 +86,6 @@ router.post(
                   } else {
                     res.status(200).send({ msg: "User successfully created" });
                     sendOtp(unique_name, "user_registration", email);
-                    services.commons.createDirectory(
-                      '../servers/' + unique_name
-                    );
-                    services.commons.copyFolder(
-                      "../templates/baseline",
-                      "../servers/" + unique_name
-                    );
                   }
                 });
               }

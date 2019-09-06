@@ -91,7 +91,7 @@ export class HomeComponent implements OnInit {
     const verifyOtpReq = new VerifyOtpRequest();
     verifyOtpReq.otp = Number(this.otp);
     verifyOtpReq.teamName = this.teamName;
-    verifyOtpReq.purpose = 'user_Registration';
+    verifyOtpReq.purpose = 'user_registration';
     this.authService.verifyOtp(verifyOtpReq).subscribe(result => {
       alert('OTP has been verified successfully.');
     });
