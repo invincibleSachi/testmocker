@@ -42,6 +42,6 @@ module.exports = {
   },
 
   findAllApiEndpointsByUniqueName: function(uniqueName){
-    return apiEndPointModel.find({uniqueName:uniqueName})
-  }
+    return apiEndPointModel.find({uniqueName:uniqueName});
+  },
 };

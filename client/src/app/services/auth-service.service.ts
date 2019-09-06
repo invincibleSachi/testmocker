@@ -6,6 +6,7 @@ import { LoginRequest } from '../models/login_model';
 import { LoginResponse } from '../models/login_resp_model';
 import { VerifyOtpRequest } from '../models/verify_otp_model';
 import { UserRegistrationRequest } from '../models/register_model';
+import { CommonHttpResponse } from '../models/common-resp';
 
 @Injectable({
   providedIn: 'root'
@@ -31,6 +32,12 @@ export class AuthServiceService {
     return this.http.post<VerifyOtpRequest>(
       `${environment.API_ENDPOINT}/auth/verifyOtp`,
       verifyOtpReq
+    );
+  }
+
+  startServer(request:Object): Observable<CommonHttpResponse> {
+    return this.http.post<CommonHttpResponse>(
+      `${environment.API_ENDPOINT}/auth/start-services`,request
     );
   }
 }

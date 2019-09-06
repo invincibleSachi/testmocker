@@ -404,6 +404,7 @@ export class MockComponent implements OnInit {
     this.apiEndpointDef.apiEndpointName = this.apiEndPoint;
     this.apiEndpointDef.serviceName = this.serviceNameFromDropdown;
     this.apiEndpointDef.apiType = this.selectedApiType;
+    this.apiEndpointDef.requestQueryParams=[...this.queryParams]
     this.apiEndpointDef.requestHeaders = [...reqHeadersMap];
     this.apiEndpointDef.responseHeaders = [...respHeadersMap];
     this.apiEndpointDef.requestBody = requestBody;
@@ -412,23 +413,28 @@ export class MockComponent implements OnInit {
 
     if (this.bodyRequest) {
       const requestTokens = this.bodyRequest.match(regex);
-
-      requestTokens.forEach(token => {
-        this.requestTokenMap.set(token, undefined);
-      });
+      if(requestTokens!=null && requestTokens!==undefined){
+        requestTokens.forEach(token => {
+          this.requestTokenMap.set(token, undefined);
+        });
+      }
     }
     if (this.bodyResponse) {
 
       const responseTokens = this.bodyResponse.match(regex);
-      responseTokens.forEach(token => {
-        this.responseTokenMap.set(token, undefined);
-      });
+      if(responseTokens!=null && responseTokens!==undefined){
+        responseTokens.forEach(token => {
+          this.responseTokenMap.set(token, undefined);
+        });
+      }
+      
     }
 
     if (this.responseTokenMap.size > 0 || this.requestTokenMap.size > 0) {
       this.showSubmitBtn = false;
     } else {
       this.createMockService.createApiEndPoint(this.apiEndpointDef).subscribe(result => {
+        this.resetApiEndoints();
         console.log(result.msg);
       });
     }
@@ -452,11 +458,13 @@ export class MockComponent implements OnInit {
     }
     console.log(this.apiEndpointDef);
     this.createMockService.createApiEndPoint(this.apiEndpointDef).subscribe(result => {
+      this.apiEndpointDef=undefined
       console.log(result.msg);
       alert(result.msg);
     }, err => {
       console.log(err);
       alert(err);
+      this.resetApiEndoints();
     });
 
   }
@@ -481,17 +489,21 @@ export class MockComponent implements OnInit {
     const regex = /##.*##/gi;
     if (this.soapBody) {
       const soapRequestTokens = this.soapBody.match(regex);
-
-      soapRequestTokens.forEach(token => {
-        this.soapRequestTokenMap.set(token, undefined);
-      });
+      if(soapRequestTokens!=null){
+        soapRequestTokens.forEach(token => {
+          this.soapRequestTokenMap.set(token, undefined);
+        });
+      }
+      
     }
     if (this.soapResponse) {
 
       const soapResponseTokens = this.soapResponse.match(regex);
-      soapResponseTokens.forEach(token => {
-        this.soapResponseTokenMap.set(token, undefined);
-      });
+      if(soapResponseTokens!=null){
+        soapResponseTokens.forEach(token => {
+          this.soapResponseTokenMap.set(token, undefined);
+        });
+      }
     }
 
     if (this.soapRequestTokenMap.size > 0 || this.soapResponseTokenMap.size > 0) {
@@ -499,6 +511,8 @@ export class MockComponent implements OnInit {
     } else {
       this.createMockService.createSoapEndPoint(this.soapEndpointDef).subscribe(result => {
         console.log(result.msg);
+        this.resetSoapEndpoints();
+        alert(result.msg);
       });
     }
 
@@ -525,8 +539,26 @@ export class MockComponent implements OnInit {
     this.soapEndpointDef.responseTokens = [...soapTokenMapResponse];
     this.createMockService.createSoapEndPoint(this.soapEndpointDef).subscribe(result => {
       console.log(result.msg);
+      this.resetSoapEndpoints();
       alert(result.msg);
     });
+  }
+  resetApiEndoints(){
+    this.apiEndPoint=undefined;
+    this.bodyRequest=undefined;
+    this.headerChecked=false;
+    this.bodyChecked=false;
+    this.responseChecked=false;
+    this.qParamChecked=false;
+    this.responseHeaderChk=false;
+    this.apiEndpointDef= new ApiEndpointModel();
+  }
+
+  resetSoapEndpoints(){
+    this.soapEndPoint=undefined;
+    this.soapBody=undefined;
+    this.soapResponse=undefined;
+    this.soapEndpointDef=new SoapEndPointsModel()
   }
 
 }

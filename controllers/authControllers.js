@@ -87,13 +87,13 @@ router.post(
                     res.status(200).send({ msg: "User successfully created" });
                     sendOtp(unique_name, "user_registration", email);
                     services.commons.createDirectory(
-                      "./servers/" + unique_name
+                      '../servers/' + unique_name
                     );
                     services.commons.createDirectory(
-                      "./templates/" + unique_name
+                      "../templates/" + unique_name
                     );
                     services.commons.copyFile(
-                      "../templates/",
+                      "../templates/baseline",
                       "../servers/" + unique_name
                     );
                   }
@@ -194,15 +194,61 @@ router.post("/login", function(req, res) {
  */
 router.post("/start-services", function(req, res) {
   var uniqueName = req.body.uniqueName;
-  services.commons.deleteFolder("../../templates/" + uniqueName);
+  console.log('current directory');
+  services.commons.executeOsCommand('pwd');
+  services.commons.deleteFolder("./servers/" + uniqueName);
+  services.commons.createDirectory("./servers/" + uniqueName);
   services.commons.copyFolder(
-    "../../templates/baseline",
-    "../../templates/" + uniqueName
+    "./templates/baseline",
+    "./servers/" + uniqueName
   );
-  apiEndPointModel.findAllApiEndpointsByUniqueName(uniqueName).exec(function(err,apiEndpoints){
+  apiEndPoint.findAllApiEndpointsByUniqueName(uniqueName).exec(function(err,apiEndpoints){
     console.log(apiEndpoints);
-  });
+    port.findPortByUniqueName(uniqueName).exec(function(err,portDetails){
+      if(err){
+        res.status(404).send({msg:'port not available'});
+      }
+      console.log('portal details');
+      console.log(portDetails);
+      let portNumber=portDetails[0].port_number
+      if(apiEndpoints.length>0){
+        var folder="./servers/" + uniqueName
+        apiEndpoints.forEach(function(apiEndpoint){
+          addApiEndPoints2Server(apiEndpoint,folder+"/server.js");
+        })
+        strAppend="app.listen("+portNumber+");"
+        services.commons.append2File(folder+"/server.js",strAppend);
+        res.status(200).send({msg:'started '+apiEndpoints.length+' services. on port '+portNumber})
+      }else{
+        res.status(200).send({msg:'no api end points available.'})
+      }
+      
+    });
+    })
+    
 });
+
+var addApiEndPoints2Server=(apiEndPoint,fileName)=>{
+  let type=apiEndPoint.apiType;
+  let apiEndPointName=apiEndPoint.apiEndpointName;
+  let serviceName=apiEndPoint.serviceName;
+  let requestHeaders=apiEndPoint.requestHeaders;
+  let responseHeaders=apiEndPoint.responseHeaders;
+  let qparams=apiEndPoint.requestQueryParams;
+  let requestBody=apiEndPoint.requestBody;
+  let responseBody=apiEndPoint.responseBody;
+  let responseTokens=responseBody.tokenMap
+  let respbody=responseBody.body;
+  responseTokens.forEach(token=>{
+    respbody=services.commons.replaceAll(respbody,token[0],token[1]);
+  });
+  let strRequestStart="app."+type.toLowerCase()+"('/"+apiEndPointName+"',function(req,res){\n";
+  let strRequestEnd="\n});\n";
+  let strBody="res.status(200).send("+JSON.stringify(JSON.parse(respbody))+");";
+  let str=strRequestStart+strBody+strRequestEnd;
+  services.commons.append2File(fileName,str);
+
+}
 
 var sendOtp = function(unique_name, purpose, email) {
   let otp = services.commons.getRandomNumber(4);

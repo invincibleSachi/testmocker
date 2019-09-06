@@ -3,7 +3,10 @@ const uuidv4 = require("uuid/v4");
 var mkdirp = require("mkdirp");
 const fs = require("fs");
 const os = require("os");
-const { exec } = require("child_process");
+const  execSync = require("child_process").execSync;
+var options = {
+  encoding: 'utf8'
+};
 module.exports = {
   getRandomNumber: function(size) {
     let max = Math.pow(10, size) - 1;
@@ -42,9 +45,7 @@ module.exports = {
     return uuidv4();
   },
   createDirectory: function(dir) {
-    mkdirp(dir, function(err) {
-      console.log(err);
-    });
+    this.executeOsCommand('mkdir '+dir);
   },
   copyFile: function(srcFile, destFile) {
     fs.copyFileSync(srcFile, destFile, err => {
@@ -54,28 +55,33 @@ module.exports = {
   },
   deleteFolder: function(folderPath) {
     let cmd = "rm -rf " + folderPath;
-    this.executeOsCommand(cmd);
-    cmd = "rmdir " + folderPath;
-    this.executeOsCommand(cmd);
+    if(fs.existsSync(folderPath)){
+      this.executeOsCommand(cmd);
+      if(fs.existsSync(folderPath)){
+        cmd = "rmdir " + folderPath;
+        this.executeOsCommand(cmd);
+      }
+      
+    }
+    
   },
   copyFolder: function(srcFolder, destFolder) {
-    let cmd = "cp " + srcFolder + " " + destFolder;
+    let cmd = "rsync -r " + srcFolder + "/ " + destFolder;
     this.executeOsCommand(cmd);
   },
   executeOsCommand: function(cmd) {
-    exec(cmd, (err, stdout, stderr) => {
-      if (err) {
-        console.log("cant run command " + cmd);
-        return;
-      }
-      console.log(`stdout: ${stdout}`);
-      console.log(`stderr: ${stderr}`);
-    });
+    console.log(cmd);
+    console.log(execSync(cmd).toString());
   },
   readFileGetContent: function(fileName) {
     return fs.readFileSync(fileName);
   },
   append2File: function(filename, appendStr) {
-    return fs.appendFileSync(appendStr);
-  }
+    console.log(filename);
+
+    return fs.appendFileSync(filename,appendStr);
+  },
+  replaceAll: function(str, find, replace) {
+    return str.replace(new RegExp(find, 'g'), replace);
+}
 };

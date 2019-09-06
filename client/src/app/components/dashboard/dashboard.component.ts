@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
+import {AuthServiceService} from '../../services/auth-service.service'
 
 @Component({
   selector: 'app-dashboard',
@@ -20,7 +21,7 @@ export class DashboardComponent implements OnInit {
   serverIconClass: string;
   serverBtnText: string
 
-  constructor(private cookieService: CookieService) {
+  constructor(private cookieService: CookieService, private authService:AuthServiceService) {
     this.teamName = this.cookieService.get('teamName');
     this.contactPerson = this.cookieService.get('contactPerson');
     this.email = this.cookieService.get('email');
@@ -50,7 +51,13 @@ export class DashboardComponent implements OnInit {
       this.buttonClass = 'btn btn-success btn-lg';
       this.serverIconClass = 'fa fa-stop';
       this.serverBtnText = 'STOP';
-      
+      let request={uniqueName:this.uniqueName};
+      this.authService.startServer(request).subscribe(result=>{
+        console.log(result);
+        alert(result.msg);
+
+      })
+
     } else {
       this.serverStatus = 'STOPPED';
       this.serverStatusClass = 'stopped-server-status';

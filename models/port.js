@@ -22,6 +22,6 @@ module.exports = {
   portModel: portModel,
   portSchema: portSchema,
   findPortByUniqueName: function(uniqueName) {
-    portModel.find({ unique_name: uniqueName });
+    return portModel.find({ unique_name: uniqueName });
   }
 };
