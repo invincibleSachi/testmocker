@@ -89,10 +89,7 @@ router.post(
                     services.commons.createDirectory(
                       '../servers/' + unique_name
                     );
-                    services.commons.createDirectory(
-                      "../templates/" + unique_name
-                    );
-                    services.commons.copyFile(
+                    services.commons.copyFolder(
                       "../templates/baseline",
                       "../servers/" + unique_name
                     );
