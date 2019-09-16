@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
-import {AuthServiceService} from '../../services/auth-service.service'
+import { AuthServiceService } from '../../services/auth-service.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -21,7 +21,7 @@ export class DashboardComponent implements OnInit {
   serverIconClass: string;
   serverBtnText: string
 
-  constructor(private cookieService: CookieService, private authService:AuthServiceService) {
+  constructor(private cookieService: CookieService, private authService: AuthServiceService) {
     this.teamName = this.cookieService.get('teamName');
     this.contactPerson = this.cookieService.get('contactPerson');
     this.email = this.cookieService.get('email');
@@ -51,8 +51,8 @@ export class DashboardComponent implements OnInit {
       this.buttonClass = 'btn btn-success btn-lg';
       this.serverIconClass = 'fa fa-stop';
       this.serverBtnText = 'STOP';
-      let request={uniqueName:this.uniqueName};
-      this.authService.startServer(request).subscribe(result=>{
+      let request = { uniqueName: this.uniqueName };
+      this.authService.startServer(request).subscribe(result => {
         console.log(result);
         alert(result.msg);
 
@@ -64,6 +64,11 @@ export class DashboardComponent implements OnInit {
       this.buttonClass = 'btn btn-danger btn-lg';
       this.serverIconClass = 'fa fa-play';
       this.serverBtnText = 'START';
+      let request = { uniqueName: this.uniqueName };
+      this.authService.stopServer(request).subscribe(result => {
+        console.log(result);
+        alert(result.msg);
+      })
     }
   }
 

@@ -19,7 +19,10 @@ var serviceModel = require("../models/service");
 var apiEndPoint = require("../models/api_endpoints");
 var soapEndPoint = require("../models/soap_endpoints");
 var multipart = require("../models/multipart_files");
-var apiEndPointModel=apiEndPoint.apiEndPointModel;
+var runningInstances = require("../models/running_instances");
+var instanceModel = runningInstances.instanceModel;
+var apiEndPointModel = apiEndPoint.apiEndPointModel;
+const execFile = require("child_process").execFile;
 
 router.post(
   "/register",
@@ -184,61 +187,127 @@ router.post("/login", function(req, res) {
  */
 router.post("/start-services", function(req, res) {
   var uniqueName = req.body.uniqueName;
-  console.log('current directory');
-  services.commons.executeOsCommand('pwd');
+  console.log("current directory");
+  services.commons.executeOsCommand("pwd");
   services.commons.deleteFolder("./servers/" + uniqueName);
   services.commons.createDirectory("./servers/" + uniqueName);
   services.commons.copyFolder(
     "./templates/baseline",
     "./servers/" + uniqueName
   );
-  apiEndPoint.findAllApiEndpointsByUniqueName(uniqueName).exec(function(err,apiEndpoints){
-    console.log(apiEndpoints);
-    port.findPortByUniqueName(uniqueName).exec(function(err,portDetails){
-      if(err){
-        res.status(404).send({msg:'port not available'});
-      }
-      console.log('portal details');
-      console.log(portDetails);
-      let portNumber=portDetails[0].port_number
-      if(apiEndpoints.length>0){
-        var folder="./servers/" + uniqueName
-        apiEndpoints.forEach(function(apiEndpoint){
-          addApiEndPoints2Server(apiEndpoint,folder+"/server.js");
-        })
-        strAppend="app.listen("+portNumber+");"
-        services.commons.append2File(folder+"/server.js",strAppend);
-        res.status(200).send({msg:'started '+apiEndpoints.length+' services. on port '+portNumber})
-      }else{
-        res.status(200).send({msg:'no api end points available.'})
-      }
-      
+  apiEndPoint
+    .findAllApiEndpointsByUniqueName(uniqueName)
+    .exec(function(err, apiEndpoints) {
+      console.log(apiEndpoints);
+      port.findPortByUniqueName(uniqueName).exec(function(err, portDetails) {
+        if (err) {
+          res.status(404).send({ msg: "port not available" });
+        }
+        console.log("portal details");
+        console.log(portDetails);
+        let portNumber = portDetails[0].port_number;
+        if (apiEndpoints.length > 0) {
+          var folder = "./servers/" + uniqueName;
+          apiEndpoints.forEach(function(apiEndpoint) {
+            addApiEndPoints2Server(apiEndpoint, folder + "/server.js");
+          });
+          strAppend = "app.listen(" + portNumber + ");";
+          services.commons.append2File(folder + "/server.js", strAppend);
+          console.log("starting server");
+          const server_file = folder + "/start.sh";
+          console.log(server_file);
+          const child = execFile(
+            server_file,
+            [uniqueName],
+            (error, stdout, stderr) => {
+              if (error) {
+                console.error("stderr", stderr);
+                throw error;
+              }
+              console.log("stdout", stdout);
+              console.log("stdout", stderr);
+            }
+          );
+          let process = {
+            unique_name: uniqueName,
+            port_number: portNumber,
+            pid_number: child.pid,
+            status: true
+          };
+          var instance = new instanceModel(process);
+          instance.save(function(err) {
+            if (err) {
+              throw err;
+            } else {
+              res
+                .status(200)
+                .send({ msg: "servers started on port " + portNumber });
+            }
+          });
+          console.log(child.pid);
+        } else {
+          res.status(200).send({ msg: "no api end points available." });
+        }
+      });
     });
-    })
-    
 });
 
-var addApiEndPoints2Server=(apiEndPoint,fileName)=>{
-  let type=apiEndPoint.apiType;
-  let apiEndPointName=apiEndPoint.apiEndpointName;
-  let serviceName=apiEndPoint.serviceName;
-  let requestHeaders=apiEndPoint.requestHeaders;
-  let responseHeaders=apiEndPoint.responseHeaders;
-  let qparams=apiEndPoint.requestQueryParams;
-  let requestBody=apiEndPoint.requestBody;
-  let responseBody=apiEndPoint.responseBody;
-  let responseTokens=responseBody.tokenMap
-  let respbody=responseBody.body;
-  responseTokens.forEach(token=>{
-    respbody=services.commons.replaceAll(respbody,token[0],token[1]);
+router.post("/stop-services", function(req, res) {
+  const uniqueName = req.body.uniqueName;
+  runningInstances.findPidByUniqueName(uniqueName).exec(function(err, data) {
+    data.forEach(pid => {
+      let cmd = "kill -9 " + pid;
+      services.commons.executeOsCommand(cmd);
+    });
   });
-  let strRequestStart="app."+type.toLowerCase()+"('/"+apiEndPointName+"',function(req,res){\n";
-  let strRequestEnd="\n});\n";
-  let strBody="res.status(200).send("+JSON.stringify(JSON.parse(respbody))+");";
-  let str=strRequestStart+strBody+strRequestEnd;
-  services.commons.append2File(fileName,str);
+  runningInstances
+    .deleteAllInstanceByUniqueName(uniqueName)
+    .exec(function(err, data) {
+      if (err) {
+        throw err;
+      } else {
+        console.log(data);
+        cmd = "rm -rf servers/" + uniqueName;
+        services.commons.executeOsCommand(cmd);
+        res.status(200).send({ msg: "All Servers Stopped" });
+      }
+    });
+});
 
-}
+var addApiEndPoints2Server = (apiEndPoint, fileName) => {
+  let type = apiEndPoint.apiType;
+  let apiEndPointName = apiEndPoint.apiEndpointName;
+  let serviceName = apiEndPoint.serviceName;
+  let requestHeaders = apiEndPoint.requestHeaders;
+  let responseHeaders = apiEndPoint.responseHeaders;
+  let qparams = apiEndPoint.requestQueryParams;
+  let requestBody = apiEndPoint.requestBody;
+  let responseBody = apiEndPoint.responseBody;
+  let responseTokens = responseBody.tokenMap;
+  let respbody = responseBody.body;
+  console.log(respbody);
+  if (responseTokens != undefined) {
+    responseTokens.forEach(token => {
+      respbody = services.commons.replaceAll(respbody, token[0], token[1]);
+    });
+  }
+
+  let strRequestStart =
+    "app." +
+    type.toLowerCase() +
+    "('/" +
+    apiEndPointName +
+    "',function(req,res){\n";
+  let strRequestEnd = "\n});\n";
+  let strBody =
+    "res.status(200).send(" + JSON.stringify(JSON.parse(respbody)) + ");";
+  let str = strRequestStart + strBody + strRequestEnd;
+  services.commons.append2File(fileName, str);
+};
+
+var waitTime = async function setTimeout() {
+  await sleep(3000);
+};
 
 var sendOtp = function(unique_name, purpose, email) {
   let otp = services.commons.getRandomNumber(4);

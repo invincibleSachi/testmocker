@@ -17,6 +17,7 @@ import { SoapEndPointsModel } from '../../models/soap-api-endpoints';
 })
 export class MockComponent implements OnInit {
   baseUrl: string;
+  soapwsdl: string;
   selectedApiType: string;
   services: string[];
   headerKeyRequest: string[];
@@ -99,6 +100,7 @@ export class MockComponent implements OnInit {
     this.headerValueResponse = [];
     this.contentTypeRequest = "";
     this.bodyRequest = "";
+    this.soapwsdl = "";
     this.serviceNameFromDropdown = undefined
     this.headerChecked = false;
     this.bodyChecked = false;
@@ -188,6 +190,7 @@ export class MockComponent implements OnInit {
     this.headerValueResponse = [];
     this.contentTypeRequest = "";
     this.bodyRequest = "";
+    this.soapwsdl = "";
     this.serviceNameFromDropdown = undefined
     this.headerChecked = false;
     this.bodyChecked = false;
@@ -404,7 +407,7 @@ export class MockComponent implements OnInit {
     this.apiEndpointDef.apiEndpointName = this.apiEndPoint;
     this.apiEndpointDef.serviceName = this.serviceNameFromDropdown;
     this.apiEndpointDef.apiType = this.selectedApiType;
-    this.apiEndpointDef.requestQueryParams=[...this.queryParams]
+    this.apiEndpointDef.requestQueryParams = [...this.queryParams]
     this.apiEndpointDef.requestHeaders = [...reqHeadersMap];
     this.apiEndpointDef.responseHeaders = [...respHeadersMap];
     this.apiEndpointDef.requestBody = requestBody;
@@ -413,7 +416,7 @@ export class MockComponent implements OnInit {
 
     if (this.bodyRequest) {
       const requestTokens = this.bodyRequest.match(regex);
-      if(requestTokens!=null && requestTokens!==undefined){
+      if (requestTokens != null && requestTokens !== undefined) {
         requestTokens.forEach(token => {
           this.requestTokenMap.set(token, undefined);
         });
@@ -422,12 +425,12 @@ export class MockComponent implements OnInit {
     if (this.bodyResponse) {
 
       const responseTokens = this.bodyResponse.match(regex);
-      if(responseTokens!=null && responseTokens!==undefined){
+      if (responseTokens != null && responseTokens !== undefined) {
         responseTokens.forEach(token => {
           this.responseTokenMap.set(token, undefined);
         });
       }
-      
+
     }
 
     if (this.responseTokenMap.size > 0 || this.requestTokenMap.size > 0) {
@@ -458,7 +461,7 @@ export class MockComponent implements OnInit {
     }
     console.log(this.apiEndpointDef);
     this.createMockService.createApiEndPoint(this.apiEndpointDef).subscribe(result => {
-      this.apiEndpointDef=undefined
+      this.apiEndpointDef = undefined
       console.log(result.msg);
       alert(result.msg);
     }, err => {
@@ -480,7 +483,8 @@ export class MockComponent implements OnInit {
       responseHeaderMap.set(header, this.soapHeaderValueResponse[index]);
     });
     this.soapEndpointDef.requestBody = this.soapBody.replace(/\n/g, "").replace(/\t/g, "");
-    this.soapEndpointDef.responseBody = this.soapResponse.replace(/\n/g, "").replace(/\t/g, "");;
+    this.soapEndpointDef.responseBody = this.soapResponse.replace(/\n/g, "").replace(/\t/g, "");
+    this.soapEndpointDef.soapwsdl = this.soapwsdl.replace(/\n/g, "").replace(/\t/g, "");;
     this.soapEndpointDef.soapServiceName = this.serviceNameFromDropdown;
     this.soapEndpointDef.soapServiceName = this.soapEndPoint;
     this.soapEndpointDef.uniqueName = this.teamName.trim().toLowerCase().replace(/" "/g, "_");
@@ -489,17 +493,17 @@ export class MockComponent implements OnInit {
     const regex = /##.*##/gi;
     if (this.soapBody) {
       const soapRequestTokens = this.soapBody.match(regex);
-      if(soapRequestTokens!=null){
+      if (soapRequestTokens != null) {
         soapRequestTokens.forEach(token => {
           this.soapRequestTokenMap.set(token, undefined);
         });
       }
-      
+
     }
     if (this.soapResponse) {
 
       const soapResponseTokens = this.soapResponse.match(regex);
-      if(soapResponseTokens!=null){
+      if (soapResponseTokens != null) {
         soapResponseTokens.forEach(token => {
           this.soapResponseTokenMap.set(token, undefined);
         });
@@ -543,22 +547,22 @@ export class MockComponent implements OnInit {
       alert(result.msg);
     });
   }
-  resetApiEndoints(){
-    this.apiEndPoint=undefined;
-    this.bodyRequest=undefined;
-    this.headerChecked=false;
-    this.bodyChecked=false;
-    this.responseChecked=false;
-    this.qParamChecked=false;
-    this.responseHeaderChk=false;
-    this.apiEndpointDef= new ApiEndpointModel();
+  resetApiEndoints() {
+    this.apiEndPoint = undefined;
+    this.bodyRequest = undefined;
+    this.headerChecked = false;
+    this.bodyChecked = false;
+    this.responseChecked = false;
+    this.qParamChecked = false;
+    this.responseHeaderChk = false;
+    this.apiEndpointDef = new ApiEndpointModel();
   }
 
-  resetSoapEndpoints(){
-    this.soapEndPoint=undefined;
-    this.soapBody=undefined;
-    this.soapResponse=undefined;
-    this.soapEndpointDef=new SoapEndPointsModel()
+  resetSoapEndpoints() {
+    this.soapEndPoint = undefined;
+    this.soapBody = undefined;
+    this.soapResponse = undefined;
+    this.soapEndpointDef = new SoapEndPointsModel();
   }
 
 }

@@ -6,6 +6,7 @@ var soapEndPointSchema = new mongoose.Schema({
   soapServiceName: { type: String, required: true, unique: true },
   requestBody: { type: String, required: true },
   responseBody: { type: String, required: true },
+  soapwsdl: { type: String, required: true },
   requestHeaders: { type: Object },
   responseHeaders: { type: Object },
   requestTokens: { type: Object },

@@ -14,7 +14,7 @@ portSchema.plugin(autoIncrement.plugin, {
   model: "port",
   field: "port_number",
   startAt: 3100,
-  incrementBy: 1
+  incrementBy: 2
 });
 var portModel = mongoose.model("port", portSchema);
 

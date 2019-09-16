@@ -3,9 +3,10 @@ const uuidv4 = require("uuid/v4");
 var mkdirp = require("mkdirp");
 const fs = require("fs");
 const os = require("os");
-const  execSync = require("child_process").execSync;
+const execSync = require("child_process").execSync;
+const exec = require("child_process").exec;
 var options = {
-  encoding: 'utf8'
+  encoding: "utf8"
 };
 module.exports = {
   getRandomNumber: function(size) {
@@ -45,7 +46,7 @@ module.exports = {
     return uuidv4();
   },
   createDirectory: function(dir) {
-    this.executeOsCommand('mkdir '+dir);
+    this.executeOsCommand("mkdir " + dir);
   },
   copyFile: function(srcFile, destFile) {
     fs.copyFileSync(srcFile, destFile, err => {
@@ -55,15 +56,13 @@ module.exports = {
   },
   deleteFolder: function(folderPath) {
     let cmd = "rm -rf " + folderPath;
-    if(fs.existsSync(folderPath)){
+    if (fs.existsSync(folderPath)) {
       this.executeOsCommand(cmd);
-      if(fs.existsSync(folderPath)){
+      if (fs.existsSync(folderPath)) {
         cmd = "rmdir " + folderPath;
         this.executeOsCommand(cmd);
       }
-      
     }
-    
   },
   copyFolder: function(srcFolder, destFolder) {
     let cmd = "rsync -r " + srcFolder + "/ " + destFolder;
@@ -71,17 +70,27 @@ module.exports = {
   },
   executeOsCommand: function(cmd) {
     console.log(cmd);
-    console.log(execSync(cmd).toString());
+    return execSync(cmd);
   },
   readFileGetContent: function(fileName) {
     return fs.readFileSync(fileName);
   },
   append2File: function(filename, appendStr) {
     console.log(filename);
-
-    return fs.appendFileSync(filename,appendStr);
+    console.log(appendStr);
+    fs.appendFileSync(filename, appendStr);
+    console.log("done");
   },
   replaceAll: function(str, find, replace) {
-    return str.replace(new RegExp(find, 'g'), replace);
-}
+    return str.replace(new RegExp(find, "g"), replace);
+  },
+  execInNewShell: function(fileName) {
+    exec(fileName, function(err, stdout, stderr) {
+      if (err) {
+        console.log(err);
+        console.log(stderr);
+      }
+      console.log(stdout);
+    });
+  }
 };

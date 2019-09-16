@@ -35,9 +35,15 @@ export class AuthServiceService {
     );
   }
 
-  startServer(request:Object): Observable<CommonHttpResponse> {
+  startServer(request: Object): Observable<CommonHttpResponse> {
     return this.http.post<CommonHttpResponse>(
-      `${environment.API_ENDPOINT}/auth/start-services`,request
+      `${environment.API_ENDPOINT}/auth/start-services`, request
+    );
+  }
+
+  stopServer(request: Object): Observable<CommonHttpResponse> {
+    return this.http.post<CommonHttpResponse>(
+      `${environment.API_ENDPOINT}/auth/stop-services`, request
     );
   }
 }
