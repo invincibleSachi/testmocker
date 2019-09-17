@@ -22,7 +22,8 @@ var multipart = require("../models/multipart_files");
 var runningInstances = require("../models/running_instances");
 var instanceModel = runningInstances.instanceModel;
 var apiEndPointModel = apiEndPoint.apiEndPointModel;
-const execFile = require("child_process").execFile;
+const spawn = require("child_process").spawn;
+const kill = require('tree-kill');
 
 router.post(
   "/register",
@@ -42,7 +43,7 @@ router.post(
       .equals("password")
       .withMessage("password and confirm password not matching")
   ],
-  function(req, res, next) {
+  function (req, res, next) {
     console.log("request:: " + JSON.stringify(req.body));
     let teamName = req.body.teamName;
     let email = req.body.email;
@@ -64,25 +65,25 @@ router.post(
       employeeId: employeeId,
       is_active: false
     };
-    User.findUserByTeamName(teamName).exec(function(err, user1) {
+    User.findUserByTeamName(teamName).exec(function (err, user1) {
       if (user1.length > 0) {
         console.log("found recordby teamname" + JSON.stringify(user1));
         return res.status(404).send({ msg: "teamname already registered" });
       } else {
-        User.findUserByEmail(email).exec(function(err, user2) {
+        User.findUserByEmail(email).exec(function (err, user2) {
           if (user2.length > 0) {
             console.log("found recordby email" + JSON.stringify(user2));
             return res.status(404).send({ msg: "email already registered" });
           } else {
             var requestedUser = new userSchema(usr);
-            requestedUser.save(function(err) {
+            requestedUser.save(function (err) {
               if (err) {
                 console.log(err);
                 res.status(500).send({ msg: "some issue at server side" });
               } else {
                 console.log(JSON.stringify(usr));
                 let port = new portModel({ unique_name: unique_name });
-                port.save(function(err) {
+                port.save(function (err) {
                   if (err) {
                     console.log(err);
                     res.status(500).send({ msg: "some issue at server side" });
@@ -100,15 +101,15 @@ router.post(
   }
 );
 
-router.post("/verifyOtp", function(req, res) {
+router.post("/verifyOtp", function (req, res) {
   let teamName = req.body.teamName;
   let otp = req.body.otp;
   let purpose = req.body.purpose;
-  User.findUserByTeamName(teamName).exec(function(err, user1) {
+  User.findUserByTeamName(teamName).exec(function (err, user1) {
     if (user1.length > 0) {
       otpModel
         .findByUserNameAndUpdate(user1[0].unique_name, otp, purpose)
-        .exec(function(err, otprec) {
+        .exec(function (err, otprec) {
           console.log("otp rec::");
           console.log(otprec);
           if (err) {
@@ -121,7 +122,7 @@ router.post("/verifyOtp", function(req, res) {
               otprec.status,
               otprec.exipiry_timestamp
             );
-            User.activeUser(teamName).exec(function(err, user2) {
+            User.activeUser(teamName).exec(function (err, user2) {
               res
                 .status(200)
                 .send({ msg: "otp has been successfully verified!!" });
@@ -131,12 +132,12 @@ router.post("/verifyOtp", function(req, res) {
     }
   });
 });
-router.post("/login", function(req, res) {
+router.post("/login", function (req, res) {
   console.log("request:: " + req.body);
   let teamName = req.body.teamName;
   let password = req.body.password;
   var query = User.findActiveUserByTeamName(teamName);
-  query.exec(function(err, user) {
+  query.exec(function (err, user) {
     if (err) {
       return false;
     }
@@ -159,7 +160,7 @@ router.post("/login", function(req, res) {
           token_expiry: d1
         };
         tokenS = new tokenSchema(response);
-        tokenS.save(function(err) {
+        tokenS.save(function (err) {
           if (err) {
             res.status(400).send({ msg: "something went wrong" });
           } else {
@@ -185,7 +186,7 @@ router.post("/login", function(req, res) {
  * read db and add routes to index.js file
  * start server
  */
-router.post("/start-services", function(req, res) {
+router.post("/start-services", function (req, res) {
   var uniqueName = req.body.uniqueName;
   console.log("current directory");
   services.commons.executeOsCommand("pwd");
@@ -197,9 +198,9 @@ router.post("/start-services", function(req, res) {
   );
   apiEndPoint
     .findAllApiEndpointsByUniqueName(uniqueName)
-    .exec(function(err, apiEndpoints) {
+    .exec(function (err, apiEndpoints) {
       console.log(apiEndpoints);
-      port.findPortByUniqueName(uniqueName).exec(function(err, portDetails) {
+      port.findPortByUniqueName(uniqueName).exec(function (err, portDetails) {
         if (err) {
           res.status(404).send({ msg: "port not available" });
         }
@@ -208,26 +209,26 @@ router.post("/start-services", function(req, res) {
         let portNumber = portDetails[0].port_number;
         if (apiEndpoints.length > 0) {
           var folder = "./servers/" + uniqueName;
-          apiEndpoints.forEach(function(apiEndpoint) {
+          apiEndpoints.forEach(function (apiEndpoint) {
             addApiEndPoints2Server(apiEndpoint, folder + "/server.js");
           });
           strAppend = "app.listen(" + portNumber + ");";
           services.commons.append2File(folder + "/server.js", strAppend);
           console.log("starting server");
-          const server_file = folder + "/start.sh";
-          console.log(server_file);
-          const child = execFile(
-            server_file,
-            [uniqueName],
-            (error, stdout, stderr) => {
-              if (error) {
-                console.error("stderr", stderr);
-                throw error;
-              }
-              console.log("stdout", stdout);
-              console.log("stdout", stderr);
-            }
+          const child = spawn(
+            'nohup', ['./start.sh', '&'], { cwd: folder }
           );
+          child.stdout.on('data', (data) => {
+            console.log(`stdout: ${data}`);
+          });
+
+          child.stderr.on('data', (data) => {
+            console.error(`stderr: ${data}`);
+          });
+
+          child.on('close', (code) => {
+            console.log(`child process exited with code ${code}`);
+          });
           let process = {
             unique_name: uniqueName,
             port_number: portNumber,
@@ -235,7 +236,7 @@ router.post("/start-services", function(req, res) {
             status: true
           };
           var instance = new instanceModel(process);
-          instance.save(function(err) {
+          instance.save(function (err) {
             if (err) {
               throw err;
             } else {
@@ -252,26 +253,35 @@ router.post("/start-services", function(req, res) {
     });
 });
 
-router.post("/stop-services", function(req, res) {
+router.post("/stop-services", function (req, res) {
   const uniqueName = req.body.uniqueName;
-  runningInstances.findPidByUniqueName(uniqueName).exec(function(err, data) {
+   runningInstances.findPidByUniqueName(uniqueName).exec( function (err, data) {
     data.forEach(pid => {
-      let cmd = "kill -9 " + pid;
-      services.commons.executeOsCommand(cmd);
+      console.log(pid)
+      console.log(pid.pid_number)
+      kill(pid.pid_number, 'SIGKILL', function (err) {
+        if (err) {
+          console.log('failed to kill pid ' + pid.pid_number);
+          console.log(err);
+        } else {
+          console.log('killed process id ' + pid.pid_number);
+        }
+      });
     });
+    runningInstances
+        .deleteAllInstanceByUniqueName(uniqueName)
+        .exec(function (err, data) {
+          if (err) {
+            throw err;
+          } else {
+            console.log(data);
+            cmd = "rm -rf servers/" + uniqueName + "/";
+            services.commons.executeOsCommand(cmd);
+            res.status(200).send({ msg: "All Servers Stopped" });
+          }
+        });
   });
-  runningInstances
-    .deleteAllInstanceByUniqueName(uniqueName)
-    .exec(function(err, data) {
-      if (err) {
-        throw err;
-      } else {
-        console.log(data);
-        cmd = "rm -rf servers/" + uniqueName;
-        services.commons.executeOsCommand(cmd);
-        res.status(200).send({ msg: "All Servers Stopped" });
-      }
-    });
+
 });
 
 var addApiEndPoints2Server = (apiEndPoint, fileName) => {
@@ -309,7 +319,7 @@ var waitTime = async function setTimeout() {
   await sleep(3000);
 };
 
-var sendOtp = function(unique_name, purpose, email) {
+var sendOtp = function (unique_name, purpose, email) {
   let otp = services.commons.getRandomNumber(4);
   let d = new Date();
   let d1 = services.commons.getTimeByOffset(constants.otpExpiry);
@@ -322,7 +332,7 @@ var sendOtp = function(unique_name, purpose, email) {
     otpPurpose: purpose
   };
   var requestedOtp = new otpSchema(otpObj);
-  requestedOtp.save(function(err) {
+  requestedOtp.save(function (err) {
     if (err) {
       console.log(err);
     } else {

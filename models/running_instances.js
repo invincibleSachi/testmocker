@@ -18,7 +18,7 @@ module.exports = {
   findPidByUniqueName: function(uniqueName) {
     return instancesModel
       .find({ unique_name: uniqueName })
-      .select({ pid_number });
+      .select('pid_number');
   },
 
   findActiveInstancesByUniqueName: function(uniqueName) {
