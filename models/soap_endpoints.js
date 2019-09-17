@@ -16,5 +16,8 @@ var soapEndpointModel = mongoose.model("soap_endpoints", soapEndPointSchema);
 
 module.exports = {
   soapEndPointModel: soapEndpointModel,
-  soapEndPointSchema: soapEndPointSchema
+  soapEndPointSchema: soapEndPointSchema,
+  getSoapEndpointCounts: function(uniqueName) {
+    return soapEndpointModel.countDocuments({ uniqueName: uniqueName });
+  }
 };

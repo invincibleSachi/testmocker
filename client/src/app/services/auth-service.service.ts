@@ -6,6 +6,7 @@ import { LoginRequest } from '../models/login_model';
 import { LoginResponse } from '../models/login_resp_model';
 import { VerifyOtpRequest } from '../models/verify_otp_model';
 import { UserRegistrationRequest } from '../models/register_model';
+import { GetServicesCount } from '../models/get-services-count-resp';
 import { CommonHttpResponse } from '../models/common-resp';
 
 @Injectable({
@@ -44,6 +45,12 @@ export class AuthServiceService {
   stopServer(request: Object): Observable<CommonHttpResponse> {
     return this.http.post<CommonHttpResponse>(
       `${environment.API_ENDPOINT}/auth/stop-services`, request
+    );
+  }
+
+  getServicesCounts(uniqueName: string): Observable<GetServicesCount> {
+    return this.http.get<GetServicesCount>(
+      `${environment.API_ENDPOINT}/auth/get-services-count?uniqueName=` + uniqueName,
     );
   }
 }

@@ -11,7 +11,7 @@ export class DashboardComponent implements OnInit {
   teamName: string;
   contactPerson: string;
   email: string;
-  noOfServices: string;
+  noOfServices: number;
   restEndpoints: number;
   soapEndpoints: number;
   uniqueName: string;
@@ -19,7 +19,7 @@ export class DashboardComponent implements OnInit {
   serverStatusClass: string;
   buttonClass: string;
   serverIconClass: string;
-  serverBtnText: string
+  serverBtnText: string;
 
   constructor(private cookieService: CookieService, private authService: AuthServiceService) {
     this.teamName = this.cookieService.get('teamName');
@@ -33,6 +33,18 @@ export class DashboardComponent implements OnInit {
     this.buttonClass = 'btn btn-danger btn-lg';
     this.serverIconClass = 'fa fa-play';
     this.serverBtnText = 'START';
+    this.authService.getServicesCounts(this.uniqueName).subscribe(result => {
+      this.noOfServices = result.serversCount;
+      this.restEndpoints = result.apiCount;
+      this.soapEndpoints = result.soapCount;
+      if (this.noOfServices > 0) {
+        this.serverStatus = 'RUNNING';
+        this.serverStatusClass = 'running-server-status';
+        this.buttonClass = 'btn btn-success btn-lg';
+        this.serverIconClass = 'fa fa-stop';
+        this.serverBtnText = 'STOP';
+      }
+    });
   }
 
   ngOnInit() {
@@ -40,8 +52,18 @@ export class DashboardComponent implements OnInit {
     this.contactPerson = this.cookieService.get('contactPerson');
     this.email = this.cookieService.get('email');
     this.uniqueName = this.cookieService.get('uniqueName');
-    this.restEndpoints = 1;
-    this.soapEndpoints = 1;
+    this.authService.getServicesCounts(this.uniqueName).subscribe(result => {
+      this.noOfServices = result.serversCount;
+      this.restEndpoints = result.apiCount;
+      this.soapEndpoints = result.soapCount;
+      if (this.noOfServices > 0) {
+        this.serverStatus = 'RUNNING';
+        this.serverStatusClass = 'running-server-status';
+        this.buttonClass = 'btn btn-success btn-lg';
+        this.serverIconClass = 'fa fa-stop';
+        this.serverBtnText = 'STOP';
+      }
+    });
   }
 
   onChangeServerStatus() {
@@ -55,8 +77,13 @@ export class DashboardComponent implements OnInit {
       this.authService.startServer(request).subscribe(result => {
         console.log(result);
         alert(result.msg);
+        this.authService.getServicesCounts(this.uniqueName).subscribe(result1 => {
+          this.noOfServices = result1.serversCount;
+          this.restEndpoints = result1.apiCount;
+          this.soapEndpoints = result1.soapCount;
+        });
 
-      })
+      });
 
     } else {
       this.serverStatus = 'STOPPED';
@@ -64,11 +91,16 @@ export class DashboardComponent implements OnInit {
       this.buttonClass = 'btn btn-danger btn-lg';
       this.serverIconClass = 'fa fa-play';
       this.serverBtnText = 'START';
-      let request = { uniqueName: this.uniqueName };
+      const request = { uniqueName: this.uniqueName };
       this.authService.stopServer(request).subscribe(result => {
         console.log(result);
         alert(result.msg);
-      })
+        this.authService.getServicesCounts(this.uniqueName).subscribe(result1 => {
+          this.noOfServices = result1.serversCount;
+          this.restEndpoints = result1.apiCount;
+          this.soapEndpoints = result1.soapCount;
+        });
+      });
     }
   }
 

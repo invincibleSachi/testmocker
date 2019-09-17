@@ -2,7 +2,7 @@ var mongoose = require("mongoose");
 var constant = require("../constants");
 
 var apiEndPointSchema = new mongoose.Schema({
-  apiEndpointName: { type: String, required: true,unique:true },
+  apiEndpointName: { type: String, required: true, unique: true },
   serviceName: { type: String, required: true },
   uniqueName: { type: String, required: true },
   apiType: { type: String, required: true },
@@ -41,7 +41,10 @@ module.exports = {
     });
   },
 
-  findAllApiEndpointsByUniqueName: function(uniqueName){
-    return apiEndPointModel.find({uniqueName:uniqueName});
+  findAllApiEndpointsByUniqueName: function(uniqueName) {
+    return apiEndPointModel.find({ uniqueName: uniqueName });
   },
+  getApiEndpointCounts: function(uniqueName) {
+    return apiEndPointModel.countDocuments({ uniqueName: uniqueName });
+  }
 };

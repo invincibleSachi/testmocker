@@ -18,9 +18,14 @@ module.exports = {
   findPidByUniqueName: function(uniqueName) {
     return instancesModel
       .find({ unique_name: uniqueName })
-      .select('pid_number');
+      .select("pid_number");
   },
-
+  getNumberOfActiveServices: function(uniqueName) {
+    return instancesModel.countDocuments({
+      unique_name: uniqueName,
+      status: true
+    });
+  },
   findActiveInstancesByUniqueName: function(uniqueName) {
     return instancesModel.find({ unique_name: uniqueName, status: true });
   },

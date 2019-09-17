@@ -19,6 +19,7 @@ import { TabViewModule } from 'primeng/tabview';
 import { FileUploadModule } from 'primeng/fileupload';
 import { ButtonModule } from 'primeng/button';
 import { AccordionModule } from 'primeng/accordion';
+import { EditMockComponent } from './components/edit-mock/edit-mock.component';
 
 const routes: Routes = [
   {
@@ -38,6 +39,10 @@ const routes: Routes = [
     component: MockComponent
   },
   {
+    path: 'edit-mock',
+    component: EditMockComponent
+  },
+  {
     path: '**',
     redirectTo: 'home'
   }]
@@ -48,7 +53,8 @@ const routes: Routes = [
     LoginComponent,
     RegisterComponent,
     DashboardComponent,
-    MockComponent
+    MockComponent,
+    EditMockComponent
   ],
   imports: [
     BrowserModule,
