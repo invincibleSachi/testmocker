@@ -1,22 +1,19 @@
 <div style="margin-left: 30px">
-<div class="form-group" style="width:250px">
-<label for="service" style="color:blue">Select Service</label>
-<select
-  class="form-control"
-  id="service"
-  name="serviceNameFromDropdown"
-  [(ngModel)]="serviceNameFromDropdown"
-  onchange="onChangeOfService()"
->
-  <option *ngFor="let service of servicesList" [value]="service">
-    {{ service }}
-  </option>
-</select>
-</div>
-<p-tabView (onChange)="tabchanged($event)">
-    <p-tabPanel header="REST EndPoints">
-    </p-tabPanel>
-    <p-tabPanel header="SOAP EndPoints">
-        </p-tabPanel>
-</p-tabView>
+  <div class="form-group" style="width:250px">
+    <label for="service" style="color:blue">Select Service</label>
+    <select
+      class="form-control"
+      id="service"
+      name="serviceNameFromDropdown"
+      onchange="onChangeOfService()"
+    >
+      <option *ngFor="let service of servicesList" [value]="service">
+        {{ service }}
+      </option>
+    </select>
+  </div>
+  <p-tabView (onChange)="tabchanged($event)">
+    <p-tabPanel header="REST EndPoints"> </p-tabPanel>
+    <p-tabPanel header="SOAP EndPoints"> </p-tabPanel>
+  </p-tabView>
 </div>

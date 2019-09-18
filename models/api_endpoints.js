@@ -13,14 +13,14 @@ var apiEndPointSchema = new mongoose.Schema({
   requestBody: {
     contentType: String,
     body: String,
-    logic:String,
+    logic: String,
     tokenMap: { type: Object },
     multipart: { type: Object }
   },
   responseBody: {
     contentType: String,
     body: String,
-    logic:String,
+    logic: String,
     tokenMap: { type: Object },
     multipart: { type: Object }
   }
@@ -44,9 +44,18 @@ module.exports = {
   },
 
   findAllApiEndpointsByUniqueName: function(uniqueName) {
+    console.log("finding apiendpoints by " + uniqueName);
     return apiEndPointModel.find({ uniqueName: uniqueName });
   },
   getApiEndpointCounts: function(uniqueName) {
     return apiEndPointModel.countDocuments({ uniqueName: uniqueName });
+  },
+  getApiEndPointNames: function(uniqueName) {
+    return apiEndPointModel.find({ uniqueName }).select("apiEndpointName");
+  },
+  updateApiEndPoint: function(uniqueName, apiEndPoint) {
+    return apiEndPointModel.update({ uniqueName: uniqueName }, apiEndPoint, {
+      upsert: true
+    });
   }
 };

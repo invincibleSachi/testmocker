@@ -40,10 +40,10 @@ export class MockComponent implements OnInit {
   responseBodyTokens: Map<string, string>;
   bodyRequest: string;
   bodyResponse: string;
-  responseLogic:string;
+  responseLogic: string;
   headerChecked = false;
   bodyChecked = false;
-  logicChecked=false;
+  logicChecked = false;
   qParamChecked = false;
   responseChecked = false;
   responseHeaderChk = false;
@@ -106,7 +106,7 @@ export class MockComponent implements OnInit {
     this.serviceNameFromDropdown = undefined
     this.headerChecked = false;
     this.bodyChecked = false;
-    this.logicChecked=false;
+    this.logicChecked = false;
     this.qParamChecked = false;
     this.responseChecked = false;
     this.responseHeaderChk = false;
@@ -125,7 +125,7 @@ export class MockComponent implements OnInit {
     this.requestTokenMap = new Map<string, any>();
     this.soapResponseTokenMap = new Map<string, any>();
     this.soapRequestTokenMap = new Map<string, any>();
-    this.responseLogic=undefined;
+    this.responseLogic = undefined;
   }
 
   headerSelected(event: Event) {
@@ -222,7 +222,7 @@ export class MockComponent implements OnInit {
     this.soapRequestTokenValue = [];
     this.soapHeaderKeyRequest = []
     this.soapHeaderValueRequest = [];
-    this.responseLogic=undefined;
+    this.responseLogic = undefined;
   }
   addHeader(endPointType: string, headerType: string) {
     let header = new Headers();
@@ -404,17 +404,19 @@ export class MockComponent implements OnInit {
       responseBody.body = this.bodyResponse.replace(/\n/g, "").replace(/\t/g, "");
     }
 
-    responseBody.contentType = this.contentTypeResponse;
-    responseBody.multipart = [...respMultipartFiles];
-    if(this.responseLogic){
-      responseBody.logic=this.responseLogic;
+
+    if (this.responseLogic) {
+      responseBody.logic = this.responseLogic;
+    } else {
+      responseBody.contentType = this.contentTypeResponse;
+      responseBody.multipart = [...respMultipartFiles];
     }
     console.log(responseBody);
     this.apiEndpointDef.uniqueName = this.teamName.trim().toLowerCase().replace(/" "/g, "_");
     this.apiEndpointDef.apiEndpointName = this.apiEndPoint;
     this.apiEndpointDef.serviceName = this.serviceNameFromDropdown;
     this.apiEndpointDef.apiType = this.selectedApiType;
-    this.apiEndpointDef.requestQueryParams = [...this.queryParams]
+    this.apiEndpointDef.requestQueryParams = [...this.queryParams];
     this.apiEndpointDef.requestHeaders = [...reqHeadersMap];
     this.apiEndpointDef.responseHeaders = [...respHeadersMap];
     this.apiEndpointDef.requestBody = requestBody;
@@ -444,8 +446,9 @@ export class MockComponent implements OnInit {
       this.showSubmitBtn = false;
     } else {
       this.createMockService.createApiEndPoint(this.apiEndpointDef).subscribe(result => {
-        this.resetApiEndoints();
         console.log(result.msg);
+        alert(result.msg);
+        this.resetApiEndoints();
       });
     }
   }
@@ -559,10 +562,20 @@ export class MockComponent implements OnInit {
     this.bodyRequest = undefined;
     this.headerChecked = false;
     this.bodyChecked = false;
-    this.logicChecked=false;
+    this.logicChecked = false;
+    this.logicChecked = false;
     this.responseChecked = false;
     this.qParamChecked = false;
     this.responseHeaderChk = false;
+    this.headers = [];
+    this.queryParams = [];
+    this.responseHeaders = [];
+    this.showBody = false;
+    this.showBodyResponse = false;
+    this.bodyRequest = "";
+    this.bodyResponse = "";
+    this.responseTokenMap = new Map<string, any>();
+    this.requestTokenMap = new Map<string, any>();
     this.apiEndpointDef = new ApiEndpointModel();
   }
 
@@ -573,14 +586,14 @@ export class MockComponent implements OnInit {
     this.soapEndpointDef = new SoapEndPointsModel();
   }
 
-  logicSelected(event:Event){
+  logicSelected(event: Event) {
     if ((<HTMLInputElement>event.target).checked) {
-      this.logicChecked=true;
+      this.logicChecked = true;
       alert('Warning \n compilation issues may corrupt your server!!')
-    }else{
-      this.logicChecked=false;
+    } else {
+      this.logicChecked = false;
     }
-    
+
   }
 
 }

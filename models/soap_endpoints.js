@@ -19,5 +19,18 @@ module.exports = {
   soapEndPointSchema: soapEndPointSchema,
   getSoapEndpointCounts: function(uniqueName) {
     return soapEndpointModel.countDocuments({ uniqueName: uniqueName });
+  },
+  findAllSoapEndpointsByUniqueName: function(uniqueName) {
+    return soapEndpointModel.find({ uniqueName: uniqueName });
+  },
+  getSoapEndPointNames: function(uniqueName) {
+    return soapEndpointModel
+      .find({ uniqueName: uniqueName })
+      .select("soapServiceName");
+  },
+  updateSoapEndpoint: function(uniqueName, endpoint) {
+    return soapEndpointModel.update({ uniqueName: uniqueName }, endpoint, {
+      upsert: true
+    });
   }
 };

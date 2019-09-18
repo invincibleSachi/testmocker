@@ -320,7 +320,7 @@ var addApiEndPoints2Server = (apiEndPoint, fileName) => {
   let responseBody = apiEndPoint.responseBody;
   let responseTokens = responseBody.tokenMap;
   let respbody = responseBody.body;
-  let logic=responseBody.logic;
+  let logic = responseBody.logic;
   console.log(respbody);
   if (responseTokens != undefined) {
     responseTokens.forEach(token => {
@@ -340,29 +340,35 @@ var addApiEndPoints2Server = (apiEndPoint, fileName) => {
     apiEndPointName +
     "',function(req,res){\n";
   let strRequestEnd = "\n});\n";
-  let strBody =
-    "res.set(" +
-    JSON.stringify(respheaders) +
-    ").status(200).send(" +
-    JSON.stringify(JSON.parse(respbody)) +
-    ");";
-    requestUpdate=(request)=>{
-      return request;
-  }
-    let logicPartFunction="\n"+apiEndPointName+"RespUpdate=(reqBody)=>{\n"+logic+"\n}\n";
-    let str=undefined
-    if(!logic){
-      str = strRequestStart + strBody + strRequestEnd;
-    }else{
-      let strBody="\nlet resBody="+apiEndPointName+"RespUpdate(req.body)\n";
-      let strBody =
+
+  let str = undefined;
+  if (!logic) {
+    let strBody =
       "res.set(" +
       JSON.stringify(respheaders) +
-      ").status(200).send(JSON.stringify(resBody))" +
+      ").status(200).send(" +
+      JSON.stringify(JSON.parse(respbody)) +
       ");";
-      str=logicPartFunction+strRequestStart+strBody+strRequestEnd;
-    }
-  
+    str = strRequestStart + strBody + strRequestEnd;
+  } else {
+    let logicPartFunction =
+      "\n" +
+      services.commons.replaceAll(apiEndPointName, "/", "") +
+      "RespUpdate=(reqBody)=>{\n" +
+      logic +
+      "\n}\n";
+    let fnCall =
+      "\nlet resBody=" +
+      services.commons.replaceAll(apiEndPointName, "/", "") +
+      "RespUpdate(req.body);\n";
+    let strBody =
+      fnCall +
+      "res.set(" +
+      JSON.stringify(respheaders) +
+      ").status(200).send(JSON.stringify(resBody));";
+    str = logicPartFunction + strRequestStart + strBody + strRequestEnd;
+  }
+
   services.commons.append2File(fileName, str);
 };
 
