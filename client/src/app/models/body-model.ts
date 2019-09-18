@@ -3,4 +3,5 @@ export class ApiBody {
   body: string;
   tokenMap: any;
   multipart: any;
+  logic:string;
 }

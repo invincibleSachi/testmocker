@@ -320,6 +320,7 @@ var addApiEndPoints2Server = (apiEndPoint, fileName) => {
   let responseBody = apiEndPoint.responseBody;
   let responseTokens = responseBody.tokenMap;
   let respbody = responseBody.body;
+  let logic=responseBody.logic;
   console.log(respbody);
   if (responseTokens != undefined) {
     responseTokens.forEach(token => {
@@ -345,7 +346,23 @@ var addApiEndPoints2Server = (apiEndPoint, fileName) => {
     ").status(200).send(" +
     JSON.stringify(JSON.parse(respbody)) +
     ");";
-  let str = strRequestStart + strBody + strRequestEnd;
+    requestUpdate=(request)=>{
+      return request;
+  }
+    let logicPartFunction="\n"+apiEndPointName+"respUpdate=(request)=>{\n"+logic+"\n}\n";
+    let str=undefined
+    if(!logic){
+      str = strRequestStart + strBody + strRequestEnd;
+    }else{
+      let strBody="\nlet resBody="+apiEndPointName+"respUpdate(req.body)\n";
+      let strBody =
+      "res.set(" +
+      JSON.stringify(respheaders) +
+      ").status(200).send(JSON.stringify(resBody))" +
+      ");";
+      str=logicPartFunction+strRequestStart+strBody+strRequestEnd;
+    }
+  
   services.commons.append2File(fileName, str);
 };
 

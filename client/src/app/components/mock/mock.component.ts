@@ -40,6 +40,7 @@ export class MockComponent implements OnInit {
   responseBodyTokens: Map<string, string>;
   bodyRequest: string;
   bodyResponse: string;
+  responseLogic:string;
   headerChecked = false;
   bodyChecked = false;
   logicChecked=false;
@@ -105,6 +106,7 @@ export class MockComponent implements OnInit {
     this.serviceNameFromDropdown = undefined
     this.headerChecked = false;
     this.bodyChecked = false;
+    this.logicChecked=false;
     this.qParamChecked = false;
     this.responseChecked = false;
     this.responseHeaderChk = false;
@@ -123,6 +125,7 @@ export class MockComponent implements OnInit {
     this.requestTokenMap = new Map<string, any>();
     this.soapResponseTokenMap = new Map<string, any>();
     this.soapRequestTokenMap = new Map<string, any>();
+    this.responseLogic=undefined;
   }
 
   headerSelected(event: Event) {
@@ -219,7 +222,7 @@ export class MockComponent implements OnInit {
     this.soapRequestTokenValue = [];
     this.soapHeaderKeyRequest = []
     this.soapHeaderValueRequest = [];
-
+    this.responseLogic=undefined;
   }
   addHeader(endPointType: string, headerType: string) {
     let header = new Headers();
@@ -403,6 +406,9 @@ export class MockComponent implements OnInit {
 
     responseBody.contentType = this.contentTypeResponse;
     responseBody.multipart = [...respMultipartFiles];
+    if(this.responseLogic){
+      responseBody.logic=this.responseLogic;
+    }
     console.log(responseBody);
     this.apiEndpointDef.uniqueName = this.teamName.trim().toLowerCase().replace(/" "/g, "_");
     this.apiEndpointDef.apiEndpointName = this.apiEndPoint;
@@ -568,7 +574,13 @@ export class MockComponent implements OnInit {
   }
 
   logicSelected(event:Event){
-    this.logicChecked=true;
+    if ((<HTMLInputElement>event.target).checked) {
+      this.logicChecked=true;
+      alert('Warning \n compilation issues may corrupt your server!!')
+    }else{
+      this.logicChecked=false;
+    }
+    
   }
 
 }

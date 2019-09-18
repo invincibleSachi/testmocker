@@ -337,7 +337,7 @@
         </label>
       </div>
       <br>
-      <div>
+      <div *ngIf="logicChecked">
       <label for="body"><b>Response Logic:</b></label>
       <textarea
         class="form-control"
@@ -351,7 +351,7 @@
           }"
       ></textarea>
     </div>
-    <div class="column body-grp " *ngIf="showBodyResponse">
+    <div class="column body-grp " *ngIf="showBodyResponse && !logicChecked">
       <button
         type="button"
         class="btn btn-primary btn-sm"
@@ -360,6 +360,7 @@
       >
         Add Response File
       </button>
+      <br>
       <div class="form-group">
         <label for="contentTypeResponse">Content Type</label>
         <select
