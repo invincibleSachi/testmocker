@@ -349,12 +349,12 @@ var addApiEndPoints2Server = (apiEndPoint, fileName) => {
     requestUpdate=(request)=>{
       return request;
   }
-    let logicPartFunction="\n"+apiEndPointName+"respUpdate=(request)=>{\n"+logic+"\n}\n";
+    let logicPartFunction="\n"+apiEndPointName+"RespUpdate=(reqBody)=>{\n"+logic+"\n}\n";
     let str=undefined
     if(!logic){
       str = strRequestStart + strBody + strRequestEnd;
     }else{
-      let strBody="\nlet resBody="+apiEndPointName+"respUpdate(req.body)\n";
+      let strBody="\nlet resBody="+apiEndPointName+"RespUpdate(req.body)\n";
       let strBody =
       "res.set(" +
       JSON.stringify(respheaders) +

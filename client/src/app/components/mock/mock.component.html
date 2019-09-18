@@ -339,16 +339,14 @@
       <br>
       <div *ngIf="logicChecked">
       <label for="body"><b>Response Logic:</b></label>
+      <label for="body"><b>function(reqBody)</b></label>
       <textarea
         class="form-control"
         rows="5"
         id="responseLogic"
         name="responseLogic"
         [(ngModel)]="responseLogic"
-        placeholder="function(request){ 
-          let response={};
-          return response;
-          }"
+        placeholder="Enter your logic here. return response Obj"
       ></textarea>
     </div>
     <div class="column body-grp " *ngIf="showBodyResponse && !logicChecked">
