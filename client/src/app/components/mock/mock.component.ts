@@ -42,6 +42,7 @@ export class MockComponent implements OnInit {
   bodyResponse: string;
   headerChecked = false;
   bodyChecked = false;
+  logicChecked=false;
   qParamChecked = false;
   responseChecked = false;
   responseHeaderChk = false;
@@ -552,6 +553,7 @@ export class MockComponent implements OnInit {
     this.bodyRequest = undefined;
     this.headerChecked = false;
     this.bodyChecked = false;
+    this.logicChecked=false;
     this.responseChecked = false;
     this.qParamChecked = false;
     this.responseHeaderChk = false;
@@ -563,6 +565,10 @@ export class MockComponent implements OnInit {
     this.soapBody = undefined;
     this.soapResponse = undefined;
     this.soapEndpointDef = new SoapEndPointsModel();
+  }
+
+  logicSelected(event:Event){
+    this.logicChecked=true;
   }
 
 }
