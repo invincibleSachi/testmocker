@@ -495,8 +495,8 @@ export class MockComponent implements OnInit {
     this.soapEndpointDef.requestBody = this.soapBody.replace(/\n/g, "").replace(/\t/g, "");
     this.soapEndpointDef.responseBody = this.soapResponse.replace(/\n/g, "").replace(/\t/g, "");
     this.soapEndpointDef.soapwsdl = this.soapwsdl.replace(/\n/g, "").replace(/\t/g, "");;
-    this.soapEndpointDef.soapServiceName = this.serviceNameFromDropdown;
-    this.soapEndpointDef.soapServiceName = this.soapEndPoint;
+    this.soapEndpointDef.serviceName = this.serviceNameFromDropdown;
+    this.soapEndpointDef.soapEndpointName = this.soapEndPoint;
     this.soapEndpointDef.uniqueName = this.teamName.trim().toLowerCase().replace(/" "/g, "_");
     this.soapEndpointDef.requestHeaders = [...requestHeaderMap];
     this.soapEndpointDef.responseHeaders = [...responseHeaderMap];

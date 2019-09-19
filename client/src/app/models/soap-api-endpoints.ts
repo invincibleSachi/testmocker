@@ -1,7 +1,7 @@
 export class SoapEndPointsModel {
   uniqueName: string;
   serviceName: string;
-  soapServiceName: string;
+  soapEndpointName: string;
   requestBody: string;
   soapwsdl: string;
   responseBody: string;

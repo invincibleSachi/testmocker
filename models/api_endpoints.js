@@ -43,19 +43,25 @@ module.exports = {
     });
   },
 
-  findAllApiEndpointsByUniqueName: function(uniqueName) {
+  findAllApiEndpointsByUniqueName: function(uniqueName,serviceName) {
     console.log("finding apiendpoints by " + uniqueName);
-    return apiEndPointModel.find({ uniqueName: uniqueName });
+    return apiEndPointModel.find({ uniqueName: uniqueName,serviceName:serviceName });
+  },
+  getApiEndpoint:function(uniqueName,serviceName,apiEndpointName){
+    return apiEndPointModel.find({ uniqueName: uniqueName,serviceName:serviceName,apiEndpointName:apiEndpointName });
   },
   getApiEndpointCounts: function(uniqueName) {
     return apiEndPointModel.countDocuments({ uniqueName: uniqueName });
   },
-  getApiEndPointNames: function(uniqueName) {
-    return apiEndPointModel.find({ uniqueName }).select("apiEndpointName");
+  getApiEndPointNames: function(uniqueName,serviceName) {
+    return apiEndPointModel.find({ uniqueName: uniqueName,serviceName:serviceName }).select("apiEndpointName");
   },
   updateApiEndPoint: function(uniqueName, apiEndPoint) {
     return apiEndPointModel.update({ uniqueName: uniqueName }, apiEndPoint, {
       upsert: true
     });
+  },
+  deleteApiEndPoint:function(uniqueName,serviceName,apiEndpointName){
+    apiEndPointModel.deleteOne({ uniqueName: uniqueName,serviceName:serviceName,apiEndpointName:apiEndpointName });
   }
 };
