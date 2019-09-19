@@ -1,1 +1,1 @@
-mongo <dbsetup.js
+node index.js

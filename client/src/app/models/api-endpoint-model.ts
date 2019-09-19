@@ -8,7 +8,6 @@ export class ApiEndpointModel {
   requestHeaders: any;
   requestQueryParams: any;
   responseHeaders: any;
-  responseQueryParams: any;
   requestBody: ApiBody;
   responseBody: ApiBody;
 }

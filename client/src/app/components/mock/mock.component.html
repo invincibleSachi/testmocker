@@ -322,24 +322,24 @@
     <br />
     <hr *ngIf="showBodyResponse" />
     <p *ngIf="showBodyResponse"><b>Response Body Part</b></p>
-    <br>
+    <br />
     <div class="form-check rest-service-chbox" *ngIf="showBodyResponse">
-        <input
-          class="form-check-input"
-          type="checkbox"
-          value=""
-          id="logicpart"
-          [checked]="logicChecked"
-          (change)="logicSelected($event)"
-        />
-        <label class="form-check-label" for="body">
-          Add Logic Instead
-        </label>
-      </div>
-      <br>
-      <div *ngIf="logicChecked">
-      <label for="body"><b>Response Logic:</b></label>
-      <label for="body"><b>function(reqBody)</b></label>
+      <input
+        class="form-check-input"
+        type="checkbox"
+        value=""
+        id="logicpart"
+        [checked]="logicChecked"
+        (change)="logicSelected($event)"
+      />
+      <label class="form-check-label" for="body">
+        Add Logic Instead
+      </label>
+    </div>
+    <br />
+    <div *ngIf="logicChecked">
+      <label for="logic"><b>Response Logic:</b></label>
+      <label for="logic"><b>function(reqBody)</b></label>
       <textarea
         class="form-control"
         rows="5"
@@ -358,7 +358,7 @@
       >
         Add Response File
       </button>
-      <br>
+      <br />
       <div class="form-group">
         <label for="contentTypeResponse">Content Type</label>
         <select

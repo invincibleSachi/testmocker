@@ -1,149 +1,296 @@
 <h4 style="margin-left: 20px;color: blue">Edit Mocks</h4>
 <div style="margin-left: 30px">
-    <div class="form-group" style="width:250px">
-        <label for="service" style="color:blue">Select Service</label>
-        <select class="form-control" id="service" name="serviceNameFromDropdown" (change)="onServiceChange($event.target.value)">
-            <option value="select">select</option>
-            <option *ngFor="let service of servicesList" [value]="service">
-                {{ service }}
-            </option>
-        </select>
-    </div>
+  <div class="form-group" style="width:250px">
+    <label for="service" style="color:blue">Select Service</label>
+    <select
+      class="form-control"
+      id="service"
+      name="serviceNameFromDropdown"
+      (change)="onServiceChange($event.target.value)"
+    >
+      <option value="select">select</option>
+      <option *ngFor="let service of servicesList" [value]="service">
+        {{ service }}
+      </option>
+    </select>
+  </div>
 </div>
 <div style="margin-left: 30px">
-    <p-tabView (onChange)="tabchanged($event)">
-        <p-tabPanel header="REST EndPoints">
-            <div class="form-group" style="width:250px">
-                <label for="service" style="color:blue">Select Rest Endpoint to Edit</label>
-                <select class="form-control" id="restEndpoints" name="restEndpoints" (change)="onApiChange($event.target.value)">
-                    <option value="select">select</option>
-                    <option *ngFor="let endPoint of restEndPointNames" [value]="endPoint">
-                        {{ endPoint }}
-                    </option>
-                </select>
+  <p-tabView (onChange)="tabchanged($event)">
+    <p-tabPanel header="REST EndPoints">
+      <div class="form-group" style="width:250px">
+        <label for="service" style="color:blue"
+          >Select Rest Endpoint to Edit</label
+        >
+        <select
+          class="form-control"
+          id="restEndpoints"
+          name="restEndpoints"
+          (change)="onApiChange($event.target.value)"
+        >
+          <option value="select">select</option>
+          <option *ngFor="let endPoint of restEndPointNames" [value]="endPoint">
+            {{ endPoint }}
+          </option>
+        </select>
+      </div>
+      <div *ngIf="restEndpoint.apiEndpointName" style="width:900px">
+        <div class="form-group">
+          <label for="apiEndPoint">Api Endpoint Name</label>
+          <input
+            type="text"
+            class="form-control"
+            id="apiEndPointName"
+            name="apiEndPointName"
+            [(ngModel)]="restEndpoint.apiEndpointName"
+            placeholder="Enter Service Name"
+          />
+
+          <label for="apiType">API Type</label>
+          <select
+            class="form-control"
+            id="apiType"
+            name="selectedApiType"
+            [(ngModel)]="restEndpoint.apiType"
+            [value]="restEndpoint.apiType"
+          >
+            <option value="GET">GET</option>
+            <option value="POST">POST</option>
+            <option value="PUT">PUT</option>
+            <option value="DELETE">DELETE</option>
+            <option value="OPTION">OPTION</option>
+            <option value="TRACE">TRACE</option>
+          </select>
+          <div *ngIf="restEndpoint.requestHeaders?.length > 0">
+            <p><b>Request Headers List</b></p>
+            <div
+              class="row"
+              *ngFor="let header of restEndpoint.requestHeaders; let i = index"
+            >
+              <input
+                type="text"
+                class="form-control input-grp"
+                id="headerKeyRequest[i]"
+                name="headerKeyRequest[i]"
+                [(ngModel)]="header[0]"
+                placeholder="Enter header Key"
+              />
+              <input
+                type="text"
+                class="form-control input-grp"
+                id="headerValueRequest[i]"
+                name="headerValueRequest[i]"
+                [(ngModel)]="header[1]"
+                placeholder="Enter header value"
+              />
             </div>
-            <div *ngIf="restEndpoint.apiEndpointName" style="width:900px">
-                <div class="form-group">
-                    <label for="apiEndPoint">Api Endpoint Name</label>
-                    <input type="text" class="form-control" id="apiEndPointName" name="apiEndPointName" [(ngModel)]="restEndpoint.apiEndpointName"
-                        placeholder="Enter Service Name" />
+          </div>
 
-                    <label for="apiType">API Type</label>
-                    <select class="form-control" id="apiType" name="selectedApiType" [(ngModel)]="restEndpoint.apiType"
-                        [value]="restEndpoint.apiType">
-                        <option value="GET">GET</option>
-                        <option value="POST">POST</option>
-                        <option value="PUT">PUT</option>
-                        <option value="DELETE">DELETE</option>
-                        <option value="OPTION">OPTION</option>
-                        <option value="TRACE">TRACE</option>
-                    </select>
-                    <div *ngIf="restEndpoint.requestHeaders?.length > 0">
-                        <p><b>Request Headers List</b></p>
-                        <div class="row" *ngFor="let header of restEndpoint.requestHeaders; let i = index">
-                            <input type="text" class="form-control input-grp" id="headerKeyRequest[i]" name="headerKeyRequest[i]"
-                                [(ngModel)]="header[0]" placeholder="Enter header Key" />
-                            <input type="text" class="form-control input-grp" id="headerValueRequest[i]" name="headerValueRequest[i]"
-                                [(ngModel)]="header[1]" placeholder="Enter header value" />
-                        </div>
-                    </div>
+          <!--query param-->
+          <br />
+          <div *ngIf="restEndpoint.requestQueryParams?.length > 0">
+            <hr />
+            <p><b>Query Param List</b></p>
+            <div
+              class="row"
+              *ngFor="
+                let param of restEndpoint.requestQueryParams;
+                let i = index
+              "
+            >
+              <input
+                type="text"
+                class="form-control input-grp"
+                id="qParamKeyRequest[i]"
+                name="qParamKeyRequest[i]"
+                [(ngModel)]="param[0]"
+                placeholder="Enter query param Key"
+              />
+              <input
+                type="text"
+                class="form-control input-grp"
+                id="qParamValueRequest[i]"
+                name="qParamValueRequest[i]"
+                [(ngModel)]="param[1]"
+                placeholder="Enter query param value"
+              />
+            </div>
+          </div>
 
-                    <!--query param-->
-                    <br />
-                    <div *ngIf="restEndpoint.queryParams?.length > 0">
-                        <hr />
-                        <p><b>Query Param List</b></p>
-                        <div class="row" *ngFor="let param of restEndpoint.queryParams; let i = index">
-                            <input type="text" class="form-control input-grp" id="qParamKeyRequest[i]" name="qParamKeyRequest[i]"
-                                [(ngModel)]="param[0]" placeholder="Enter query param Key" />
-                            <input type="text" class="form-control input-grp" id="qParamValueRequest[i]" name="qParamValueRequest[i]"
-                                [(ngModel)]="param[1]" placeholder="Enter query param value" />
-                        </div>
-
-                    </div>
-
-                    <div *ngIf="restEndpoint.requestBody">
-                        <br>
-                        <label><u><b>Request Part</b></u></label>
-                        <br>
-                        <label for="contentType">Content Type</label>
-                        <select class="form-control" id="contentType" [(ngModel)]="restEndpoint.requestBody.contentType"
-                            [value]="restEndpoint.requestBody.contentType">
-                            <option value='application/json'>application/json</option>
-                            <option value='application/text'>application/text</option>
-                            <option value='application/text'>application/text</option>
-                            <option value='multipart/form-data'>multipart/form-data</option>
-                            <option value='text/plain'>text/plain</option>
-                            <option value='text/html'>text/html</option>
-                            <option value='application/javascript'>application/javascript</option>
-                        </select>
-                        <br>
-                        <label for="body"><b>Request Body:</b></label>
-                        <textarea class="form-control" rows="5" id="body" [(ngModel)]="restEndpoint.requestBody.body"
-                            value="restEndpoint.requestBody.body"></textarea>
-                        <div *ngIf="restEndpoint.requestBody.tokenMap?.length > 0">
-                            <hr />
-                            <p><b>Request Tokens</b></p>
-                            <div class="row" style="width:600px" *ngFor="let reqToken of restEndpoint.requestBody.tokenMap; let i = index">
-                                <input type="text" class="form-control input-grp" id="requestTokenKey[i]" name="requestTokenKey[i]"
-                                    [(ngModel)]="reqToken[0]" placeholder="Enter Token Key" />
-                                <input type="text" class="form-control input-grp" id="requestTokenValue[i]" name="requestTokenValue[i]"
-                                    [(ngModel)]="reqToken[1]" placeholder="Enter Token value" />
-                            </div>
-                        </div>
-                    </div>
-                    <div *ngIf="restEndpoint.responseBody">
-                        <div>
-                            <hr />
-                            <label><u><b>Response Part</b></u></label>
-                            <hr />
-                            <label for="contentType">Content Type</label>
-                            <select class="form-control" id="contentType" [(ngModel)]="restEndpoint.responseBody.contentType"
-                                [value]="restEndpoint.responseBody.contentType">
-                                <option value='application/json'>application/json</option>
-                                <option value='application/text'>application/text</option>
-                                <option value='application/text'>application/text</option>
-                                <option value='multipart/form-data'>multipart/form-data</option>
-                                <option value='text/plain'>text/plain</option>
-                                <option value='text/html'>text/html</option>
-                                <option value='application/javascript'>application/javascript</option>
-                            </select>
-                            <label for="body"><b>Response Body:</b></label>
-                            <textarea class="form-control" rows="5" id="body" [(ngModel)]="restEndpoint.responseBody.body"></textarea>
-                            <div *ngIf="restEndpoint.responseBody.tokenMap?.length > 0">
-                                <hr />
-                                <p><b>Response Tokens</b></p>
-                                <div class="row" style="width:600px" *ngFor="let resToken of restEndpoint.responseBody.tokenMap; let i = index">
-                                    <input type="text" class="form-control input-grp" id="responseTokenKey[i]" name="responseTokenKey[i]"
-                                        [(ngModel)]="resToken[0]" placeholder="Enter Token Key" />
-                                    <input type="text" class="form-control input-grp" id="responseTokenValue[i]" name="responseTokenValue[i]"
-                                        [(ngModel)]="resToken[1]" placeholder="Enter Token value" />
-                                </div>
-                            </div>
-                        </div>
-                        <div *ngIf="restEndpoint.responseBody.logic">
-                            <label for="logic"><b>Response Logic:</b></label>
-                            <textarea class="form-control" rows="5" id="logic" [(ngModel)]="restEndpoint.responseBody.logic"></textarea>
-                        </div>
-                    </div>
+          <div *ngIf="restEndpoint.requestBody">
+            <br />
+            <label
+              ><u><b>Request Part</b></u></label
+            >
+            <br />
+            <label for="contentType">Content Type</label>
+            <select
+              class="form-control"
+              id="contentType"
+              [(ngModel)]="restEndpoint.requestBody.contentType"
+              [value]="restEndpoint.requestBody.contentType"
+            >
+              <option value="application/json">application/json</option>
+              <option value="application/text">application/text</option>
+              <option value="application/text">application/text</option>
+              <option value="multipart/form-data">multipart/form-data</option>
+              <option value="text/plain">text/plain</option>
+              <option value="text/html">text/html</option>
+              <option value="application/javascript"
+                >application/javascript</option
+              >
+            </select>
+            <br />
+            <label for="body"><b>Request Body:</b></label>
+            <textarea
+              class="form-control"
+              rows="5"
+              id="body"
+              [(ngModel)]="restEndpoint.requestBody.body"
+              value="restEndpoint.requestBody.body"
+            ></textarea>
+            <div *ngIf="restEndpoint.requestBody.tokenMap?.length > 0">
+              <hr />
+              <p><b>Request Tokens</b></p>
+              <div
+                class="row"
+                style="width:600px"
+                *ngFor="
+                  let reqToken of restEndpoint.requestBody.tokenMap;
+                  let i = index
+                "
+              >
+                <input
+                  type="text"
+                  class="form-control input-grp"
+                  id="requestTokenKey[i]"
+                  name="requestTokenKey[i]"
+                  [(ngModel)]="reqToken[0]"
+                  placeholder="Enter Token Key"
+                />
+                <input
+                  type="text"
+                  class="form-control input-grp"
+                  id="requestTokenValue[i]"
+                  name="requestTokenValue[i]"
+                  [(ngModel)]="reqToken[1]"
+                  placeholder="Enter Token value"
+                />
+              </div>
+            </div>
+          </div>
+          <div *ngIf="restEndpoint.responseBody">
+            <div *ngIf="!restEndpoint.responseBody.logic">
+              <hr />
+              <label
+                ><u><b>Response Part</b></u></label
+              >
+              <hr />
+              <label for="contentType">Content Type</label>
+              <select
+                class="form-control"
+                id="contentType"
+                [(ngModel)]="restEndpoint.responseBody.contentType"
+                [value]="restEndpoint.responseBody.contentType"
+              >
+                <option value="application/json">application/json</option>
+                <option value="application/text">application/text</option>
+                <option value="application/text">application/text</option>
+                <option value="multipart/form-data">multipart/form-data</option>
+                <option value="text/plain">text/plain</option>
+                <option value="text/html">text/html</option>
+                <option value="application/javascript"
+                  >application/javascript</option
+                >
+              </select>
+              <label for="body"><b>Response Body:</b></label>
+              <textarea
+                class="form-control"
+                rows="5"
+                id="body"
+                [(ngModel)]="restEndpoint.responseBody.body"
+              ></textarea>
+              <div *ngIf="restEndpoint.responseBody.tokenMap?.length > 0">
+                <hr />
+                <p><b>Response Tokens</b></p>
+                <div
+                  class="row"
+                  style="width:600px"
+                  *ngFor="
+                    let resToken of restEndpoint.responseBody.tokenMap;
+                    let i = index
+                  "
+                >
+                  <input
+                    type="text"
+                    class="form-control input-grp"
+                    id="responseTokenKey[i]"
+                    name="responseTokenKey[i]"
+                    [(ngModel)]="resToken[0]"
+                    placeholder="Enter Token Key"
+                  />
+                  <input
+                    type="text"
+                    class="form-control input-grp"
+                    id="responseTokenValue[i]"
+                    name="responseTokenValue[i]"
+                    [(ngModel)]="resToken[1]"
+                    placeholder="Enter Token value"
+                  />
                 </div>
-                <div class="row" style="width:600px">
-                    <button style="width:150px; margin-left: 20px " type="button" class="btn btn-primary" (click)="updateApiEndpoint()">Update</button>
-                    <button style="width:150px; margin-left: 20px " type="button" class="btn btn-primary" (click)="deleteApiEndpoint()">Delete</button>
-                </div>
+              </div>
             </div>
-
-
-        </p-tabPanel>
-        <p-tabPanel header="SOAP EndPoints">
-            <div class="form-group" style="width:250px">
-                <label for="service" style="color:blue">Select SOAP Endpoint to Edit</label>
-                <select class="form-control" id="soapEndpoints" name="soapEndpoints" (change)="onSoapChange($event.target.value)">
-                    <option *ngFor="let endPoint of soapEndpoints" [value]="endPoint">
-                        {{ endPoint }}
-                    </option>
-                </select>
+            <div
+              *ngIf="restEndpoint.responseBody.logic">
+              <div class="row" style="margin-left: 20px">
+                <label for="logic"><b>Response Logic : </b></label>
+                <p><b>function(reqBody)</b></p>
+              </div>
+              <textarea
+                class="form-control"
+                rows="5"
+                id="logic"
+                [(ngModel)]="restEndpoint.responseBody.logic"
+              ></textarea>
             </div>
-        </p-tabPanel>
-    </p-tabView>
+          </div>
+        </div>
+        <div class="row" style="width:600px">
+          <button
+            style="width:150px; margin-left: 20px "
+            type="button"
+            class="btn btn-primary"
+            (click)="updateApiEndpoint()"
+          >
+            Update
+          </button>
+          <button
+            style="width:150px; margin-left: 20px "
+            type="button"
+            class="btn btn-primary"
+            (click)="deleteApiEndpoint()"
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+    </p-tabPanel>
+    <p-tabPanel header="SOAP EndPoints">
+      <div class="form-group" style="width:250px">
+        <label for="service" style="color:blue"
+          >Select SOAP Endpoint to Edit</label
+        >
+        <select
+          class="form-control"
+          id="soapEndpoints"
+          name="soapEndpoints"
+          (change)="onSoapChange($event.target.value)"
+        >
+          <option *ngFor="let endPoint of soapEndPointNames" [value]="endPoint">
+            {{ endPoint }}
+          </option>
+        </select>
+      </div>
+    </p-tabPanel>
+  </p-tabView>
 </div>

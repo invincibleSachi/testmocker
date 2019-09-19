@@ -198,15 +198,12 @@ router.post("/start-services", function(req, res) {
     "./servers/" + uniqueName
   );
   apiEndPoint
-    .findAllApiEndpointsByUniqueName(uniqueName)
+    .findAllApiEndpointsByUniqueNameOnly(uniqueName)
     .exec(function(err, apiEndpoints) {
-      console.log(apiEndpoints);
       port.findPortByUniqueName(uniqueName).exec(function(err, portDetails) {
         if (err) {
           res.status(404).send({ msg: "port not available" });
         }
-        console.log("portal details");
-        console.log(portDetails);
         let portNumber = portDetails[0].port_number;
         if (apiEndpoints.length > 0) {
           var folder = "./servers/" + uniqueName;
@@ -217,7 +214,9 @@ router.post("/start-services", function(req, res) {
           strAppend = "app.listen(" + portNumber + ");";
           services.commons.append2File(folder + "/server.js", strAppend);
           console.log("starting server");
-          const child = spawn("nohup", ["./start.sh", "&"], { cwd: folder });
+          const child = spawn("nohup", ["./start.sh", "&>", "./output.log"], {
+            cwd: folder
+          });
           child.stdout.on("data", data => {
             console.log(`stdout: ${data}`);
           });
@@ -267,12 +266,17 @@ router.get("/get-services-count", function(req, res) {
             soapEndPoint
               .getSoapEndpointCounts(uniqueName)
               .exec(function(err, soapCounts) {
-                let response = {
-                  serversCount: count,
-                  apiCount: apisCount,
-                  soapCount: soapCounts
-                };
-                res.status(200).send(response);
+                port
+                  .findPortByUniqueName(uniqueName)
+                  .exec(function(err, ports) {
+                    let response = {
+                      serversCount: count,
+                      apiCount: apisCount,
+                      soapCount: soapCounts,
+                      portNumber: ports[0].port_number
+                    };
+                    res.status(200).send(response);
+                  });
               });
           });
       }

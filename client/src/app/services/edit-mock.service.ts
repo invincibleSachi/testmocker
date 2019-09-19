@@ -26,44 +26,44 @@ export class EditMockService {
     );
   }
 
-  getApiEndpointsNames(uniqueName: string,serviceName:string): Observable<string[]> {
+  getApiEndpointsNames(uniqueName: string, serviceName: string): Observable<string[]> {
     return this.http.get<string[]>(
-      `${environment.API_ENDPOINT}/edit/get-rest-endpoints-name?uniqueName=` + uniqueName+"&serviceName="+serviceName
+      `${environment.API_ENDPOINT}/edit/get-rest-endpoints-name?uniqueName=` + uniqueName + "&serviceName=" + serviceName
     );
   }
 
-  getSoapEndpointsNames(uniqueName: string,serviceName:string): Observable<string[]> {
+  getSoapEndpointsNames(uniqueName: string, serviceName: string): Observable<string[]> {
     return this.http.get<string[]>(
-      `${environment.API_ENDPOINT}/edit/get-soap-endpoints-name?uniqueName=` + uniqueName+"&serviceName="+serviceName
+      `${environment.API_ENDPOINT}/edit/get-soap-endpoints-name?uniqueName=` + uniqueName + "&serviceName=" + serviceName
     );
   }
 
-  getApiEndpoints(uniqueName: string,serviceName:string): Observable<ApiEndpointModel[]> {
+  getApiEndpoints(uniqueName: string, serviceName: string): Observable<ApiEndpointModel[]> {
     return this.http.get<ApiEndpointModel[]>(
-      `${environment.API_ENDPOINT}/edit/get-rest-endpoints?uniqueName=` + uniqueName+"&serviceName="+serviceName
+      `${environment.API_ENDPOINT}/edit/get-rest-endpoints?uniqueName=` + uniqueName + "&serviceName=" + serviceName
     );
   }
 
-  getApiEndpoint(uniqueName: string,serviceName:string,apiEndpointName:string): Observable<ApiEndpointModel> {
+  getApiEndpoint(uniqueName: string, serviceName: string, apiEndpointName: string): Observable<ApiEndpointModel> {
     return this.http.get<ApiEndpointModel>(
-      `${environment.API_ENDPOINT}/edit/get-rest-endpoint?uniqueName=` + uniqueName+"&serviceName="+serviceName+"&restEndpointName="+apiEndpointName
+      `${environment.API_ENDPOINT}/edit/get-rest-endpoint?uniqueName=` + uniqueName + "&serviceName=" + serviceName + "&restEndpointName=" + apiEndpointName
     );
   }
 
-  deleteApiEndpoint(uniqueName: string,serviceName:string,apiEndpointName:string): Observable<CommonHttpResponse> {
+  deleteApiEndpoint(uniqueName: string, serviceName: string, apiEndpointName: string): Observable<CommonHttpResponse> {
     return this.http.get<CommonHttpResponse>(
-      `${environment.API_ENDPOINT}/edit/delete-rest-endpoint?uniqueName=` + uniqueName+"&serviceName="+serviceName+"&restEndpointName="+apiEndpointName
+      `${environment.API_ENDPOINT}/edit/delete-rest-endpoint?uniqueName=` + uniqueName + "&serviceName=" + serviceName + "&restEndpointName=" + apiEndpointName
     );
   }
 
-  getSoapEndpoints(uniqueName: string,serviceName:string): Observable<SoapEndPointsModel[]> {
+  getSoapEndpoints(uniqueName: string, serviceName: string): Observable<SoapEndPointsModel[]> {
     return this.http.get<SoapEndPointsModel[]>(
-      `${environment.API_ENDPOINT}/edit/get-soap-endpoints?uniqueName=` + uniqueName+"&serviceName="+serviceName
+      `${environment.API_ENDPOINT}/edit/get-soap-endpoints?uniqueName=` + uniqueName + "&serviceName=" + serviceName
     );
   }
-  getSoapEndpoint(uniqueName: string,serviceName:string,soapEndpointName:string): Observable<ApiEndpointModel> {
+  getSoapEndpoint(uniqueName: string, serviceName: string, soapEndpointName: string): Observable<ApiEndpointModel> {
     return this.http.get<ApiEndpointModel>(
-      `${environment.API_ENDPOINT}/edit/get-rest-endpoint?uniqueName=` + uniqueName+"&serviceName="+serviceName+"&soapEndPointName="+soapEndpointName
+      `${environment.API_ENDPOINT}/edit/get-rest-endpoint?uniqueName=` + uniqueName + "&serviceName=" + serviceName + "&soapEndPointName=" + soapEndpointName
     );
   }
 }

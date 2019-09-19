@@ -9,7 +9,6 @@ var apiEndPointSchema = new mongoose.Schema({
   requestHeaders: { type: Object },
   requestQueryParams: { type: Object },
   responseHeaders: { type: Object },
-  responseQueryParams: { type: Object },
   requestBody: {
     contentType: String,
     body: String,
@@ -42,26 +41,42 @@ module.exports = {
       apiEndpointName: apiEndPointName
     });
   },
-
-  findAllApiEndpointsByUniqueName: function(uniqueName,serviceName) {
+  findAllApiEndpointsByUniqueNameOnly: function(uniqueName) {
     console.log("finding apiendpoints by " + uniqueName);
-    return apiEndPointModel.find({ uniqueName: uniqueName,serviceName:serviceName });
+    return apiEndPointModel.find({ uniqueName: uniqueName });
   },
-  getApiEndpoint:function(uniqueName,serviceName,apiEndpointName){
-    return apiEndPointModel.find({ uniqueName: uniqueName,serviceName:serviceName,apiEndpointName:apiEndpointName });
+  findAllApiEndpointsByUniqueName: function(uniqueName, serviceName) {
+    console.log("finding apiendpoints by " + uniqueName);
+    return apiEndPointModel.find({
+      uniqueName: uniqueName,
+      serviceName: serviceName
+    });
+  },
+  getApiEndpoint: function(uniqueName, serviceName, apiEndpointName) {
+    return apiEndPointModel.find({
+      uniqueName: uniqueName,
+      serviceName: serviceName,
+      apiEndpointName: apiEndpointName
+    });
   },
   getApiEndpointCounts: function(uniqueName) {
     return apiEndPointModel.countDocuments({ uniqueName: uniqueName });
   },
-  getApiEndPointNames: function(uniqueName,serviceName) {
-    return apiEndPointModel.find({ uniqueName: uniqueName,serviceName:serviceName }).select("apiEndpointName");
+  getApiEndPointNames: function(uniqueName, serviceName) {
+    return apiEndPointModel
+      .find({ uniqueName: uniqueName, serviceName: serviceName })
+      .select("apiEndpointName");
   },
   updateApiEndPoint: function(uniqueName, apiEndPoint) {
     return apiEndPointModel.update({ uniqueName: uniqueName }, apiEndPoint, {
       upsert: true
     });
   },
-  deleteApiEndPoint:function(uniqueName,serviceName,apiEndpointName){
-    apiEndPointModel.deleteOne({ uniqueName: uniqueName,serviceName:serviceName,apiEndpointName:apiEndpointName });
+  deleteApiEndPoint: function(uniqueName, serviceName, apiEndpointName) {
+    apiEndPointModel.deleteOne({
+      uniqueName: uniqueName,
+      serviceName: serviceName,
+      apiEndpointName: apiEndpointName
+    });
   }
 };
