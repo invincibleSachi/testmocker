@@ -64,7 +64,7 @@ router.post(
       salt: creds[1],
       contact_person: contactPerson,
       employeeId: employeeId,
-      is_active: false
+      is_active: true
     };
     User.findUserByTeamName(teamName).exec(function(err, user1) {
       if (user1.length > 0) {
@@ -90,7 +90,7 @@ router.post(
                     res.status(500).send({ msg: "some issue at server side" });
                   } else {
                     res.status(200).send({ msg: "User successfully created" });
-                    sendOtp(unique_name, "user_registration", email);
+                    //sendOtp(unique_name, "user_registration", email);
                   }
                 });
               }

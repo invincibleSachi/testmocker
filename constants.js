@@ -1,7 +1,7 @@
 module.exports = {
   dbConn: "mongodb://localhost:27017/mocker",
-  email: "sachi.techno@gmail.com",
-  passwd: "QWECde#$rfV*&^",
+  email: "", //Enter your Gmail id
+  passwd: "", //Enter your App Password
   emailhost: "smtp.gmail.com",
   emailport: 587,
   otpExpiry: 90000,
