@@ -44,6 +44,12 @@ export class EditMockService {
     );
   }
 
+  getAllApiEndpoints(uniqueName: string): Observable<ApiEndpointModel[]> {
+    return this.http.get<ApiEndpointModel[]>(
+      `${environment.API_ENDPOINT}/edit/get-rest-endpoints?uniqueName=` + uniqueName
+    );
+  }
+
   getApiEndpoint(uniqueName: string, serviceName: string, apiEndpointName: string): Observable<ApiEndpointModel> {
     return this.http.get<ApiEndpointModel>(
       `${environment.API_ENDPOINT}/edit/get-rest-endpoint?uniqueName=` + uniqueName + "&serviceName=" + serviceName + "&restEndpointName=" + apiEndpointName

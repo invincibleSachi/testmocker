@@ -34,7 +34,8 @@ router.post("/update-soap", function(req, res, next) {
 router.get("/get-rest-endpoints", function(req, res, next) {
   let uniqueName = req.query.uniqueName;
   let serviceName = req.query.serviceName;
-  apiEndPoint
+  if(serviceName){
+    apiEndPoint
     .findAllApiEndpointsByUniqueName(uniqueName,serviceName)
     .exec(function(err, apiEndpoints) {
       if (err) {
@@ -43,6 +44,16 @@ router.get("/get-rest-endpoints", function(req, res, next) {
         res.status(200).send(apiEndpoints);
       }
     });
+  }else{
+    apiEndPoint.findAllApiEndpointsByUniqueNameOnly(uniqueName).exec(function(err,apiEndpoints){
+      if (err) {
+        res.status(400).send({ msg: "no endpoints found" });
+      } else {
+        res.status(200).send(apiEndpoints);
+      }
+    });
+  }
+  
 });
 router.get("/get-rest-endpoint", function(req, res, next) {
     let uniqueName = req.query.uniqueName;

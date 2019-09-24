@@ -14,16 +14,29 @@
       </tr>
     </thead>
     <tbody>
-      <tr>
-        <th scope="row">1</th>
-        <td>SLP</td>
-        <td>/api/v1/get/test123</td>
-        <td><button class="btn btn-primary">Add Redirect <i class="fa fa-external-link"></i></button></td>
-        <td><button class="btn btn-primary">Add Auto Update <i class="fa fa-refresh"></i></button></td>
-        <td class="align-center"><input class="form-check-input" type="checkbox" value="checked" id="redirectEnabled"></td>
-        <td class="align-center"><input class="form-check-input" type="checkbox" value="checked" id="autoUpdateEnabled"></td>
+      <tr *ngFor="let api of apiEndpointsList; let i = index">
+        <td scope="row">{{i}}</td>
+        <td>{{api.serviceName}}</td>
+        <td>{{api.apiEndpointName}}</td>
+        <td><button data-toggle="tooltip"
+            data-placement="auto"
+            pButton class="btn btn-primary" [disabled]="!redirectEnabled[i]" (click)="redirectMenu.toggle($event)" >Add Redirect <i class="fa fa-external-link"></i></button></td>
+        <td><button data-toggle="tooltip"
+            data-placement="auto"
+            pButton class="btn btn-primary" [disabled]="!updateEnabled[i]" (click)="updateMenu.toggle($event)">Add Auto Update <i class="fa fa-refresh"></i></button></td>
+        <td class="align-center"><input class="form-check-input" type="checkbox" value="checked" id="redirectEnabled[i]" (click)="onCheck('redirect',i,$event.target.checked)"></td>
+        <td class="align-center"><input class="form-check-input" type="checkbox" value="checked" id="autoUpdateEnabled[i]" (click)="onCheck('update',i,$event.target.checked)"></td>
       </tr>
     </tbody>
   </table>
-  <button class="btn btn-primary">Submit</button>
 </div>
+
+<p-overlayPanel #redirectMenu>
+    <p>redirected</p>
+
+</p-overlayPanel>
+
+<p-overlayPanel #updateMenu>
+    <p>update</p>
+
+</p-overlayPanel>
