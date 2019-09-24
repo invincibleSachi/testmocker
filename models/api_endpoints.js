@@ -22,7 +22,8 @@ var apiEndPointSchema = new mongoose.Schema({
     logic: String,
     tokenMap: { type: Object },
     multipart: { type: Object }
-  }
+  },
+  isAutoUpdateEnabled:{type:Boolean}
 });
 var apiEndPointModel = mongoose.model("api_endpoint", apiEndPointSchema);
 
@@ -78,5 +79,17 @@ module.exports = {
       serviceName: serviceName,
       apiEndpointName: apiEndpointName
     });
+  },
+  getAutoUpdateEndpoints:function(uniqueName){
+    return apiEndPointModel.find({
+      uniqueName: uniqueName, isAutoUpdateEnabled:true
+    })
+  },
+  enableAutoUpdate:function(uniqueName,serviceName,apiEndpointName){
+    return apiEndPointModel.update({
+      uniqueName:uniqueName,
+      serviceName:serviceName,
+      apiEndpointName:apiEndpointName
+    },{isAutoUpdateEnabled:true});
   }
 };

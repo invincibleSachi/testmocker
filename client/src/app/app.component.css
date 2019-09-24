@@ -60,8 +60,8 @@ body {
   border: 1px solid #ddd;
   border-radius: 4px;
   padding: 5px;
-  width: 100px;
-  height: 60px;
+  width: 90px;
+  height: 80px;
 }
 .img-logo-main {
   border: 1.5px solid #ddd;
@@ -201,5 +201,5 @@ h4 {
   font-weight: bold;
 }
 .navbar-width {
-  width: 145px;
+  width: 130px;
 }

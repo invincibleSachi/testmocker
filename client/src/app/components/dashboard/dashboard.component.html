@@ -32,6 +32,10 @@
       <th>No of Soap end points Defined:</th>
       <td>{{ soapEndpoints }}</td>
     </tr>
+    <tr>
+      <th>URL Redirects Enabled:</th>
+      <td>false</td>
+    </tr>
   </table>
 
   <div class="server">
@@ -43,6 +47,9 @@
         <i class="{{ serverIconClass }}" aria-hidden="true"></i>
         {{ serverBtnText }}
       </button>
+    </p>
+    <p style="margin-left: 60px">
+      <button class="btn btn-info" (click)="setupAutoUpdates()">Setup Mock Auto Updates</button>
     </p>
   </div>
 </div>

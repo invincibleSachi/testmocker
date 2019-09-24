@@ -100,4 +100,8 @@ export class DashboardComponent implements OnInit {
     }
   }
 
+  setupAutoUpdates(){
+    
+  }
+
 }

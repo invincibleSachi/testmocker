@@ -20,6 +20,7 @@ import { FileUploadModule } from 'primeng/fileupload';
 import { ButtonModule } from 'primeng/button';
 import { AccordionModule } from 'primeng/accordion';
 import { EditMockComponent } from './components/edit-mock/edit-mock.component';
+import { RedirectComponent } from './components/redirect/redirect.component';
 
 const routes: Routes = [
   {
@@ -33,6 +34,10 @@ const routes: Routes = [
   {
     path: 'dashboard',
     component: DashboardComponent
+  },
+  {
+    path: 'redirect',
+    component: RedirectComponent
   },
   {
     path: 'service-mock',
@@ -54,7 +59,8 @@ const routes: Routes = [
     RegisterComponent,
     DashboardComponent,
     MockComponent,
-    EditMockComponent
+    EditMockComponent,
+    RedirectComponent
   ],
   imports: [
     BrowserModule,
