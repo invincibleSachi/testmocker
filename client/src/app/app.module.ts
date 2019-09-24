@@ -21,6 +21,7 @@ import { ButtonModule } from 'primeng/button';
 import { AccordionModule } from 'primeng/accordion';
 import { EditMockComponent } from './components/edit-mock/edit-mock.component';
 import { RedirectComponent } from './components/redirect/redirect.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 const routes: Routes = [
   {
@@ -74,7 +75,8 @@ const routes: Routes = [
     FileUploadModule,
     ButtonModule,
     AccordionModule,
-    TabViewModule
+    TabViewModule,
+    BrowserAnimationsModule
   ],
   providers: [DatePipe, CookieService],
   bootstrap: [AppComponent]

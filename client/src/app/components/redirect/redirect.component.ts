@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import {ApiEndpointModel} from '../../models/api-endpoint-model';
+import { ApiEndpointModel } from '../../models/api-endpoint-model';
+import { RedirectModel } from '../../models/redirect-model';
+import { RedirectRequestModel } from '../../models/redirect-req-model';
+import { RedirectServices } from '../../services/redirect-service';
 import { EditMockService } from '../../services/edit-mock.service';
 import { CookieService } from 'ngx-cookie-service';
-import { OverlayPanelModule } from "primeng/overlaypanel";
 
 @Component({
   selector: 'app-redirect',
@@ -10,14 +12,11 @@ import { OverlayPanelModule } from "primeng/overlaypanel";
   styleUrls: ['./redirect.component.css']
 })
 export class RedirectComponent implements OnInit {
-  apiEndpointsList:ApiEndpointModel[]=[];
-  teamName:string;
-  serviceName:string;
-  uniqueName:string;
-  redirectEnabled:boolean[]=[];
-  updateEnabled:boolean[]=[];
+  teamName: string;
+  uniqueName: string;
+  redirectInfo: RedirectRequestModel[] = [];
 
-  constructor(private editMockService:EditMockService,private cookieService:CookieService) { 
+  constructor(private editMockService: EditMockService, private cookieService: CookieService, private redirectServices: RedirectServices) {
     this.teamName = this.cookieService.get('teamName');
     this.uniqueName = this.teamName.toLowerCase().replace(' ', '_');
   }
@@ -25,29 +24,37 @@ export class RedirectComponent implements OnInit {
   ngOnInit() {
     this.teamName = this.cookieService.get('teamName');
     this.uniqueName = this.teamName.toLowerCase().replace(' ', '_');
-    this.getListOfApiEndpoints();
-    this.redirectEnabled=[];
-    this.updateEnabled=[]
-    
+    this.getListOfRedirects();
+    this.redirectInfo = [];
+
   }
 
-  getListOfApiEndpoints=()=>{
-    this.editMockService.getAllApiEndpoints(this.uniqueName).subscribe(result=>{
-      console.log(result);
-      this.apiEndpointsList=result;
-      result.forEach(point=>{
-        this.redirectEnabled.push(false);
-        this.updateEnabled.push(false);
-      });
-    })
+  getListOfRedirects = () => {
+    this.redirectServices.getRedirects(this.uniqueName).subscribe(result => {
+      this.redirectInfo = result;
+    });
   }
 
-  onCheck=(type,index,chk)=>{
-    if(type==='redirect'){
-      this.redirectEnabled[index]=chk;
-    }else{
-      this.updateEnabled[index]=chk;
+  onCheck = (type, index, chk) => {
+    if (type === 'redirect') {
+      this.redirectInfo[index].redirectEnabled = chk;
+    } else {
+      this.redirectInfo[index].autoUpdateEnabled = chk;
     }
+  }
+
+  onSave() {
+    this.redirectInfo.forEach((request, index) => {
+      if (request.redirectUrl && request.authHeader) {
+        this.redirectServices.addRedirect(request).subscribe(result => {
+          if (index === this.redirectInfo.length) {
+            alert('saved successfully!!');
+          }
+        });
+      } else {
+        console.log(request.apiEndpointName + ' not saved');
+      }
+    });
   }
 
 }

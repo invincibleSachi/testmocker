@@ -6,10 +6,23 @@ import { Observable } from 'rxjs';
 import { CreateService } from '../models/create-service-req';
 import { CommonHttpResponse } from '../models/common-resp';
 import { ApiEndpointModel } from '../models/api-endpoint-model';
-import { SoapEndPointsModel } from '../models/soap-api-endpoints';
+import { RedirectRequestModel } from '../models/redirect-req-model';
 
+@Injectable({
+  providedIn: 'root'
+})
 export class RedirectServices {
-    constructor(private http: HttpClient) { }
-    
+  constructor(private http: HttpClient) { }
+  addRedirect(redirectRequest: RedirectRequestModel): Observable<CommonHttpResponse> {
+    return this.http.post<CommonHttpResponse>(
+      `${environment.API_ENDPOINT}/redirect/add`, redirectRequest,
+    );
+  }
+
+  getRedirects(uniqueName: string): Observable<RedirectRequestModel[]> {
+    return this.http.get<RedirectRequestModel[]>(
+      `${environment.API_ENDPOINT}/redirect/get?uniqueName=` + uniqueName
+    );
+  }
 
 }
