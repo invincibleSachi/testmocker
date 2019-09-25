@@ -7,15 +7,42 @@ var redirectModel = redirects.redirectModel;
 var redirectSchema = redirects.redirectSchema;
 
 router.post("/add", function(req, res) {
-  var redirectSchema = new redirectModel(req.body);
-  redirectSchema.save(function(err) {
-    if (err) {
-      console.log(err);
-      res.status(404).send({ msg: "internal error" });
-    } else {
-      res.status(200).send({ msg: "redirect Saved successsfully" });
+  var redirectRec = new redirectModel(req.body);
+  //if record present then upsert else insert
+  let uniqueName=req.body.uniqueName;
+  let serviceName=req.body.serviceName;
+  let apiEndpointName=req.body.apiEndpointName;
+  console.log(req.body);
+  redirects.getRedirect(uniqueName,serviceName,apiEndpointName).exec(function(err,redirect){
+    if(err || redirect.length==0){
+      console.log('no records found');
+      if(err){
+        console.log(err);
+      }
+      redirectRec.save(function(err) {
+        if (err) {
+          console.log('error occurred in insert');
+          res.status(404).send({ msg: "internal error" });
+        } else {
+          res.status(200).send({ msg: "redirect Saved successsfully" });
+        }
+      });
+    }else{
+      console.log('redirect found!!')
+      console.log(redirect);
+      var redirectRecUpdt = new redirectModel(req.body);
+      redirects.updateRedirect(uniqueName,serviceName,apiEndpointName,redirectRecUpdt).exec(function(err,result){
+        if (err) {
+          console.log('error occurred in upsert');
+          res.status(404).send({ msg: "internal error" });
+        } else {
+          res.status(200).send({ msg: "redirect updated successsfully" });
+        }
+      });
     }
-  });
+    
+  })
+  
 });
 
 router.get("/get", function(req, res) {
@@ -62,16 +89,4 @@ router.get("/get", function(req, res) {
   });
 });
 
-checkExists = function(arr, uniqueName, serviceName, apiEndpointName) {
-  arr.forEach(a => {
-    if (
-      a.uniqueName == uniqueName &&
-      a.serviceName == serviceName &&
-      a.apiEndpointName == apiEndpointName
-    ) {
-      return true;
-    }
-  });
-  return false;
-};
 module.exports = router;

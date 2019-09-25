@@ -39,8 +39,8 @@
               type="text"
               class="form-control input-grp"
               id="authHeaderKey[i]"
-              name="authHeaderKey[i]"
-              [(ngModel)]="redirectInfo[i].authHeader.key"
+              name="redirect.authHeader.key"
+              [(ngModel)]="redirect.authHeader.key"
               placeholder="Source Auth Header Key"
               [disabled]="
                 !redirect.redirectEnabled && !redirect.autoUpdateEnabled
@@ -50,8 +50,8 @@
               type="text"
               class="form-control input-grp"
               id="authHeaderValue[i]"
-              name="authHeaderValue[i]"
-              [(ngModel)]="redirectInfo[i].authHeader.value"
+              name="redirect.authHeader.value"
+              [(ngModel)]="redirect.authHeader.value"
               placeholder="Source Auth Header Value"
               [disabled]="
                 !redirect.redirectEnabled && !redirect.autoUpdateEnabled
@@ -66,6 +66,7 @@
             value="checked"
             id="redirectEnabled[i]"
             (click)="onCheck('redirect', i, $event.target.checked)"
+            [(ngModel)]="redirect.redirectEnabled"
           />
         </td>
         <td class="align-center">
@@ -75,6 +76,7 @@
             value="checked"
             id="autoUpdateEnabled[i]"
             (click)="onCheck('update', i, $event.target.checked)"
+            [(ngModel)]="redirect.autoUpdateEnabled"
           />
         </td>
       </tr>

@@ -78,6 +78,7 @@ router.post("/multipart/:type", upload.single("file"), function(req, res) {
 });
 router.post("/create-soap", function(req, res, next) {
   let createApi = new soapEndPointModel(req.body);
+  console.log(req.body);
   createApi.save(function(err) {
     if (err) {
       console.log(err);

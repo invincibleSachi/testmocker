@@ -242,6 +242,13 @@ router.post("/start-services", function(req, res) {
               res
                 .status(200)
                 .send({ msg: "servers started on port " + portNumber });
+                //SOAP Endpoint 
+                soapEndPoint.findAllSoapEndpointsByUniqueName(uniqueName).exec(function(err,soapEndPoints){
+                  if(err){
+                    console.log(err);
+                  }
+                  addSoapPoints2Server(soapEndPoints, folder + "/soap.js");
+                });
             }
           });
           console.log(child.pid);
@@ -312,6 +319,20 @@ router.post("/stop-services", function(req, res) {
       });
   });
 });
+
+var addSoapPoints2Server=(soapEndPoints,fileName)=>{
+  soapEndPoints.forEach(soapEndPoint=>{
+    let apiEndPointName = soapEndPoint.apiEndpointName;
+    let serviceName = soapEndPoint.serviceName;
+    let soapEndpointName=soapEndPoint.soapEndpointName;
+    let requestBody=soapEndPoint.requestBody;
+    let responseBody=soapEndPoint.responseBody;
+    let soapwsdl=soapEndPoint.soapwsdl;
+    let requestHeaders=soapEndPoint.requestHeaders;
+    let responseHeaders=soapEndPoint.responseHeaders;
+    let responseTokens=soapEndPoint.responseTokens;
+  });
+}
 
 var addApiEndPoints2Server = (apiEndPoint, fileName) => {
   let type = apiEndPoint.apiType;
