@@ -33,7 +33,7 @@
     "nodemailer": "^6.3.0",
     "nodemon": "^1.19.1",
     "soap": "^0.29.0",
-    "tree-kill": "^1.2.1",
+    "tree-kill": "^1.2.2",
     "uuid": "^3.3.2",
     "validator": "^11.1.0"
   }
