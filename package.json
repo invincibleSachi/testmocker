@@ -30,7 +30,7 @@
     "mongoose-sequence": "^5.1.0",
     "multer": "^1.4.2",
     "node-cron": "^2.0.3",
-    "nodemailer": "^6.3.0",
+    "nodemailer": "^6.4.16",
     "nodemon": "^1.19.1",
     "soap": "^0.29.0",
     "tree-kill": "^1.2.1",
